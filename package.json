@@ -1,0 +1,29 @@
+{
+  "name": "happyfarm",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "description": "This is an amazing project in MEMSI 2017 related to agriculture.",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ericpoon/HappyFarm.git"
+  },
+  "keywords": [
+    "Smart",
+    "Farm",
+    "Agriculture"
+  ],
+  "author": "Basy, Eric, Qiaochu, Thomas, Martin and Shuai",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ericpoon/HappyFarm/issues"
+  },
+  "homepage": "https://github.com/Ericpoon/HappyFarm#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "mongoose": "^4.7.6",
+  }
+}

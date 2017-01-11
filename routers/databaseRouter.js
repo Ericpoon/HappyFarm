@@ -9,4 +9,30 @@ router.get('/test', function (req, res) {
     res.send('Database connected.');
 });
 
+router.get('/getuserinfo', function (req, res) {
+    function completion(data) {
+        res.send(data)
+    }
+
+    database.getUserInfo('Eric', completion);
+});
+
+router.get('/getsensordata', function (req, res) {
+    function completion(data) {
+        var simplified = [];
+        for (var i = 0; i < data.length; i++) {
+            simplified[i] = {
+                'temperature': data[i].temperature,
+                'humidity': data[i].humidity,
+                'time': data[i].time
+            }
+        }
+
+        res.send(simplified);
+    }
+
+    database.getSensorData('Eric', completion);
+});
+
+
 module.exports = router;

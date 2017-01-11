@@ -91,10 +91,10 @@ function getUserInfo(user, completion) {
         completion(docs[0]);
     });
 }
-function getData(user, completion) {
+function getSensorData(user, completion) {
     Data.find({'user': user}, {}, function (err, docs) {
         completion(docs);
     });
 }
 
-module.exports = {};
+module.exports = {'getUserInfo': getUserInfo, 'getSensorData': getSensorData};

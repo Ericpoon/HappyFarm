@@ -5,14 +5,34 @@
     <title>Happy Farm</title>
     <script src="/public/javascript/angular.min.js"></script>
     <script src="/public/javascript/farmApp.js"></script>
+    <link rel="stylesheet" href="/public/css/main.css">
 </head>
 <body ng-app="farmApp" ng-controller="farmController">
-<div>
-    {{userInfo}}
+
+
+<div class="welcome" ng-show="showWelcome">
+    <div class="inner">
+        <img src="/public/images/logo_2.png" class="logo">
+        <p class="description">We simply make things easier. We care about you. We love you.</p>
+        <br>
+        <button class="startButton" ng-click="show()">let's do it</button>
+    </div>
 </div>
-<hr>
-<div>
-    {{sensorData}}
+
+
+<div class="data" ng-hide="showWelcome">
+    <div>
+        User:       {{userInfo.name}}<br>
+        Age:        {{userInfo.age}}<br>
+        Location:   {{userInfo.location}}<br>
+        Level:      {{userInfo.level}}<br>
+        Plant:      {{userInfo.plant}}<br>
+        startDate:  {{userInfo.startDate}}<br>
+    </div>
+    <hr>
+    <div>
+        <p ng-repeat="n in sensorData | orderBy: time">{{n}}</p>
+    </div>
 </div>
 
 </body>

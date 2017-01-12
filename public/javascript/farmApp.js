@@ -1,6 +1,9 @@
 var app = angular.module('farmApp', []);
 
 app.controller('farmController', function ($scope, $http) {
+
+    $scope.showWelcome = true;
+
     function initialize() {
         $http.get('/db/getuserinfo').then(function (res) {
             $scope.userInfo = res.data;
@@ -11,5 +14,11 @@ app.controller('farmController', function ($scope, $http) {
     }
 
     initialize();
+    
+    $scope.show = function () {
+        $scope.showWelcome = false;
+    };
+
+    $scope.show();
 
 });

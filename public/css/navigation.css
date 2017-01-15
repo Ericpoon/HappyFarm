@@ -1,0 +1,26 @@
+.navigation {
+    background-color: rgb(30, 30, 30);
+}
+
+.navigation #navigationContainer {
+    height: 45px;
+    padding: 10px;
+}
+
+.navigation #navigationLogo {
+    height: 100%;
+    clear: both;
+    float: left;
+}
+
+.navigation #companyName {
+    font-size: 25px;
+    color: rgb(137, 174, 68);
+    font-family: "Apple SD Gothic Neo";
+    margin: 0;
+    padding-top: 2px;
+    vertical-align: middle;
+    padding-left: 10px;
+    line-height: 45px;
+    float: left;
+}

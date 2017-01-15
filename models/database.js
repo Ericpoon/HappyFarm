@@ -25,6 +25,9 @@ var dataSchema = mongoose.Schema({
     user: 'String',
     temperature: 'Number',
     humidity: 'Number',
+    sunlight: 'Number',
+    acidity: 'Number',
+    soilQuality: 'Number',
     time: 'Number' // 20170109135639
 });
 
@@ -34,6 +37,8 @@ var behaviourSchema = mongoose.Schema({
     amount: 'Number',
     time: 'Number' // 20170109135639
 });
+
+// var plantSchema;
 
 var User = mongoose.model('users', userSchema);
 var Data = mongoose.model('data', dataSchema);
@@ -64,11 +69,14 @@ function initialize(needNewData) {
             });
         }
 
-        for (var i = 0; i < 20; i++) {
+        for (var i = 0; i < 100; i++) {
             var newData = new Data({
                 user: 'Eric',
-                temperature: Math.random() * 30,   // 0  - 30
-                humidity: 20 + Math.random() * 70, // 20 - 90
+                temperature: Math.random() * 30,    // 0  - 30
+                humidity: 20 + Math.random() * 70,  // 20 - 90
+                sunlight: Math.random() * 100,      // 0  - 100
+                acidity: 2 + Math.random() * 10,    // 2  - 12
+                soilQuality: Math.random() * 100,    // 0  - 100
                 time: 20170109135639 + i * 10000
             });
             newData.save(function (err, product) {

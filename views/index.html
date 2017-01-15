@@ -3,12 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Happy Farm</title>
-    <script src="/public/javascript/angular.min.js"></script>
-    <script src="/public/javascript/farmApp.js"></script>
-    <link rel="stylesheet" href="/public/css/main.css">
-</head>
-<body ng-app="farmApp" ng-controller="farmController">
 
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+
+    <script src="/public/javascript/farmApp.js"></script>
+    <link rel="stylesheet" href="/public/css/welcome.css">
+    <link rel="stylesheet" href="/public/css/data.css">
+    <link rel="stylesheet" href="/public/css/navigation.css">
+
+    <!-- D3.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+    <script src="/public/javascript/radarChart/radarChartModel.js"></script>
+
+</head>
+
+<body ng-app="farmApp" ng-controller="farmController">
 
 <div class="welcome" ng-show="showWelcome">
     <div class="inner">
@@ -20,19 +30,44 @@
 </div>
 
 
+<div class="navigation">
+    <div id="navigationContainer">
+        <p id="companyName">happy farm</p>
+    </div>
+    <div>
+    </div>
+</div>
+
+
 <div class="data" ng-hide="showWelcome">
-    <div>
-        User:       {{userInfo.name}}<br>
-        Age:        {{userInfo.age}}<br>
-        Location:   {{userInfo.location}}<br>
-        Level:      {{userInfo.level}}<br>
-        Plant:      {{userInfo.plant}}<br>
-        startDate:  {{userInfo.startDate}}<br>
+    <!-- Left Part -->
+    <div class="overallDisplay">
+        <p>Hello, {{userInfo.name}}</p>
+        <hr>
+        Age: {{userInfo.age}}<br>
+        Location: {{userInfo.location}}<br>
+        Level: {{userInfo.level}}<br>
+        Plant: {{userInfo.plant}}<br>
+        startDate: {{userInfo.startDate}}<br>
+
+        <div class="radarChartDisplay" ng-model="radarChartDisplay">
+            <myng-radar-chart data="sensorData">
+                <div id="radarChart"></div>
+            </myng-radar-chart>
+        </div>
+
     </div>
-    <hr>
-    <div>
-        <p ng-repeat="n in sensorData | orderBy: time">{{n}}</p>
+
+    <!-- Right Part -->
+    <div class="detailedDisplay">
+        <p class="parameterLabel">Temperature</p>
+        <div class="chartDisplay">
+            <myng-line-chart>
+                <div id="lineChart"></div>
+            </myng-line-chart>
+        </div>
     </div>
+
 </div>
 
 </body>

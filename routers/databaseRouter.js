@@ -19,16 +19,7 @@ router.get('/getuserinfo', function (req, res) {
 
 router.get('/getsensordata', function (req, res) {
     function completion(data) {
-        var simplified = [];
-        for (var i = 0; i < data.length; i++) {
-            simplified[i] = {
-                'temperature': data[i].temperature,
-                'humidity': data[i].humidity,
-                'time': data[i].time
-            }
-        }
-
-        res.send(simplified);
+        res.send(data);
     }
 
     database.getSensorData('Eric', completion);

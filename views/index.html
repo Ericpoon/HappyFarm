@@ -11,10 +11,12 @@
     <link rel="stylesheet" href="/public/css/welcome.css">
     <link rel="stylesheet" href="/public/css/data.css">
     <link rel="stylesheet" href="/public/css/navigation.css">
+    <link rel="stylesheet" href="/public/css/nv.d3.css">
 
     <!-- D3.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
     <script src="/public/javascript/radarChart/radarChartModel.js"></script>
+    <script src="/public/javascript/lineChart/nv.d3.min.js"></script>
 
 </head>
 
@@ -62,7 +64,7 @@
     <div class="detailedDisplay">
         <p class="parameterLabel">Temperature</p>
         <div class="chartDisplay">
-            <myng-line-chart>
+            <myng-line-chart data="sensorData" index="0" id="lineChartContainer">
                 <div id="lineChart"></div>
             </myng-line-chart>
         </div>

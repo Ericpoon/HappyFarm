@@ -36,3 +36,9 @@
     font-size: 22px;
     text-align: center;
 }
+
+.detailedDisplay #lineChart {
+    margin: auto;
+    width: 80%;
+    height: 500px;
+}

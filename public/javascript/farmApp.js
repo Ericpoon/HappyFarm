@@ -1,6 +1,6 @@
 var app = angular.module('farmApp', []);
 
-app.controller('farmController', function ($scope, $http) {
+app.controller('farmController', function ($scope, $http, $cacheFactory) {
 
     $scope.showWelcome = true;
 
@@ -23,7 +23,7 @@ app.controller('farmController', function ($scope, $http) {
 
 });
 
-app.directive('myngRadarChart', function ($window, $http) {
+app.directive('myngRadarChart', function ($window, $http, $cacheFactory) {
     function link(scope, element, attrs) {
 
         var max = {
@@ -135,8 +135,9 @@ app.directive('myngRadarChart', function ($window, $http) {
             };
             //Call function to draw the Radar chart
             RadarChart("#radarChart", data, radarChartOptions, showDetailedChart);
+
             function showDetailedChart(index) {
-                alert('We are going to present data ' + index + '.');
+                scope.$root.$broadcast('chartChange', index);
             }
         }
     }
@@ -145,6 +146,144 @@ app.directive('myngRadarChart', function ($window, $http) {
         restrict: 'E',
         scope: {
             'data': '='
+        },
+        link: link
+    }
+});
+
+app.directive('myngLineChart', function ($cacheFactory) {
+    function link(scope, element, attrs) {
+        var data;
+        var chartData;
+        scope.$watch('data', function (newValue) {
+                if (newValue !== undefined) {
+                    console.log('CHANGED');
+                    data = newValue;
+                    chartData = data.map(function (a) {
+                        return {
+                            name: 'Temperature',
+                            x: a.time,
+                            y: a.temperature // default
+                            // TODO: should add unit
+                        }
+                    });
+                    makeChart(chartData);
+                }
+            }
+        );
+
+        scope.$on('chartChange', function (event, msg) {
+            console.log('Change to chart #' + msg);
+            d3.selectAll("#lineChart > *").remove(); // remove the current chart
+            console.log(parseInt(msg) == 0);
+            switch (parseInt(msg)) {
+                case 0:
+                    chartData = data.map(function (a) {
+                        return {
+                            name: 'Temperature',
+                            x: a.time,
+                            y: a.temperature
+                        }
+                    });
+                    break;
+                case 1:
+                    chartData = data.map(function (a) {
+                        return {
+                            name: 'Humidity',
+                            x: a.time,
+                            y: a.humidity
+                        }
+                    });
+                    break;
+                case 2:
+                    chartData = data.map(function (a) {
+                        return {
+                            name: 'Sunlight',
+                            x: a.time,
+                            y: a.sunlight
+                        }
+                    });
+                    break;
+                case 3:
+                    chartData = data.map(function (a) {
+                        return {
+                            name: 'Soil',
+                            x: a.time,
+                            y: a.soilQuality
+                        }
+                    });
+                    break;
+                case 4:
+                    chartData = data.map(function (a) {
+                        return {
+                            name: 'Acidity',
+                            x: a.time,
+                            y: a.acidity
+                        }
+                    });
+                    break;
+            }
+            makeChart(chartData);
+        });
+
+        function makeChart(data) {
+            // Wrapping in nv.addGraph allows for '0 timeout render', stores rendered charts in nv.graphs, and may do more in the future... it's NOT required
+            var chart;
+            nv.addGraph(function () {
+                chart = nv.models.lineChart()
+                    .options({
+                        duration: 300,
+                        useInteractiveGuideline: true
+                    });
+                // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the parent chart, so need to chain separately
+                chart.xAxis
+                    .axisLabel("Time (s)")
+                    .tickFormat(d3.format(',.1f'))
+                    .staggerLabels(true);
+                chart.yAxis
+                    .axisLabel('Voltage (v)')
+                    .tickFormat(function (d) {
+                        if (d == null) {
+                            return 'N/A';
+                        }
+                        return d3.format(',.2f')(d);
+                    });
+                data = normalizeData(data);
+                d3.select('#lineChart').append('svg')
+                    .datum(data)
+                    .call(chart);
+                nv.utils.windowResize(chart.update);
+                return chart;
+            });
+
+            function normalizeData(data) {
+                var history = [],
+                    max = [],
+                    min = [];
+                data.map(function (a) {
+                    history.push({x: a.x, y: a.y});
+                });
+
+                return [
+                    {
+                        area: true,
+                        values: history,
+                        key: "Sine Wave",
+                        color: "#ff7f0e",
+                        strokeWidth: 4,
+                        classed: 'dashed',
+                        fillOpacity: .1
+                    }
+                ];
+            }
+        }
+    }
+
+    return {
+        restrict: 'E',
+        scope: {
+            'data': '=',
+            'index': '='
         },
         link: link
     }

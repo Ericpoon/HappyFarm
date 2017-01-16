@@ -25,9 +25,7 @@ router.get('/getsensordata', function (req, res) {
 
 // receive data from sensor
 router.post('/postdata/:key/:value', function (req, res) {
-    var date = new Date();
-    var time = date.getFullYear() + '.' + date.getMonth() +'.' + date.getmi;
-    res.send('Successful - Data received from sensor:\n' + req.params.key + ': ' + req.params.value + '\n' + time);
+    res.send('Successful - Data received from sensor:\n' + req.params.key + ': ' + req.params.value);
 });
 
 module.exports = router;

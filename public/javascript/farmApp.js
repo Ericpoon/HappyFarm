@@ -155,6 +155,7 @@ app.directive('myngLineChart', function ($cacheFactory) {
     function link(scope, element, attrs) {
         var data;
         var chartData;
+        console.log('chart name', scope.chartName);
         scope.$watch('data', function (newValue) {
                 if (newValue !== undefined) {
                     console.log('CHANGED');
@@ -227,6 +228,7 @@ app.directive('myngLineChart', function ($cacheFactory) {
         });
 
         function makeChart(data) {
+            document.getElementById('chartName').innerHTML = data[0].name; // TODO: hard coded, not good
             // Wrapping in nv.addGraph allows for '0 timeout render', stores rendered charts in nv.graphs, and may do more in the future... it's NOT required
             var chart;
             nv.addGraph(function () {
@@ -237,11 +239,11 @@ app.directive('myngLineChart', function ($cacheFactory) {
                     });
                 // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the parent chart, so need to chain separately
                 chart.xAxis
-                    .axisLabel("Time (s)")
-                    .tickFormat(d3.format(',.1f'))
+                    .axisLabel("Time")
+                    .tickFormat(d3.format(','))
                     .staggerLabels(true);
                 chart.yAxis
-                    .axisLabel('Voltage (v)')
+                    .axisLabel(data[0].name)
                     .tickFormat(function (d) {
                         if (d == null) {
                             return 'N/A';
@@ -268,7 +270,7 @@ app.directive('myngLineChart', function ($cacheFactory) {
                     {
                         area: true,
                         values: history,
-                        key: "Sine Wave",
+                        key: data[0].name,
                         color: "#ff7f0e",
                         strokeWidth: 4,
                         classed: 'dashed',

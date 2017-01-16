@@ -143,11 +143,10 @@ function RadarChart(id, data, options, showDetailedChart) {
     //Append the labels at each axis
     axis.append("text")
         .attr("class", "legend")
-        .style("font-size", "13px") // label text size 11px
-        .style('fill', '#057aff')
         .attr("class", "hyper").on("click", function (name, index) {
             showDetailedChart(index);
         })
+        .attr("class", "d3button")
         .attr("text-anchor", "middle")
         .attr("dy", "0.35em") // 0.35em
         .attr("x", function (d, i) {

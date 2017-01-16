@@ -42,3 +42,14 @@
     width: 80%;
     height: 500px;
 }
+
+.d3button {
+    font-size: 14px;
+    fill: #057aff;
+}
+
+.d3button:hover {
+    font-size: 17px;
+    fill: #1c39ff;
+    cursor: pointer;
+}

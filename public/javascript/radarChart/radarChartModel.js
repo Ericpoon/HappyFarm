@@ -148,7 +148,7 @@ function RadarChart(id, data, options, showDetailedChart) {
         })
         .attr("class", "d3button")
         .attr("text-anchor", "middle")
-        .attr("dy", "0.35em") // 0.35em
+        .attr("dy", "-0.3px") // 0.35em
         .attr("x", function (d, i) {
             return rScale(maxValue * cfg.labelFactor) * Math.cos(angleSlice * i - Math.PI / 2);
         })

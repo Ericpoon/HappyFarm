@@ -13,7 +13,6 @@ router.get('/getuserinfo', function (req, res) {
     function completion(data) {
         res.send(data)
     }
-
     database.getUserInfo('Eric', completion);
 });
 
@@ -21,9 +20,14 @@ router.get('/getsensordata', function (req, res) {
     function completion(data) {
         res.send(data);
     }
-
     database.getSensorData('Eric', completion);
 });
 
+// receive data from sensor
+router.post('/postdata/:key/:value', function (req, res) {
+    var date = new Date();
+    var time = date.getFullYear() + '.' + date.getMonth() +'.' + date.getmi;
+    res.send('Successful - Data received from sensor:\n' + req.params.key + ': ' + req.params.value + '\n' + time);
+});
 
 module.exports = router;

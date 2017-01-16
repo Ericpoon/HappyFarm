@@ -19,7 +19,7 @@ app.controller('farmController', function ($scope, $http, $cacheFactory) {
         $scope.showWelcome = false;
     };
 
-    $scope.show();
+    // $scope.show();
 
 });
 

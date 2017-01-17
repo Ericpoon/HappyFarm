@@ -107,5 +107,27 @@ function getSensorData(user, completion) {
         completion(docs);
     });
 }
+function getLatestData(user, completion) {
+    Data.find({'user': user}, {}, {sort: {time: 1}}, function (err, docs) {
+        if (docs.length > 0) {
+            docs = docs.slice(docs.length - 1);
+        }
+        // completion(docs);
 
-module.exports = {'getUserInfo': getUserInfo, 'getSensorData': getSensorData};
+        completion({
+            _id: a,
+            user: 'Eric',
+            temperature: Math.random() * 30,    // 0  - 30
+            humidity: 20 + Math.random() * 70,  // 20 - 90
+            sunlight: Math.random() * 100,      // 0  - 100
+            acidity: 2 + Math.random() * 10,    // 2  - 12
+            soilQuality: Math.random() * 100,    // 0  - 100
+            time: a
+        });
+        a += 10000;
+    });
+}
+
+var a = 20170110125699;
+
+module.exports = {'getUserInfo': getUserInfo, 'getSensorData': getSensorData, 'getLatestData': getLatestData};

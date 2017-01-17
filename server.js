@@ -18,7 +18,6 @@ app.use('/chat', chatRouter);
 app.listen(config.port, function (err) {
     if (err) {
         console.error('server.js - Error occurred when trying to listen to port #' + config.port);
-
     } else {
         console.log('server.js - Listening to port #' + config.port);
     }

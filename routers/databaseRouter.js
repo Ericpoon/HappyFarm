@@ -22,11 +22,17 @@ router.get('/getsensordata', function (req, res) {
     }
     database.getSensorData('Eric', completion);
 });
+router.get('/getlatestdata', function (req, res) {
+    function completion(data) {
+        res.send(data);
+    }
+
+    database.getLatestData('Eric', completion);
+});
 
 // receive data from sensor
 router.post('/postdata/:key/:value', function (req, res) {
     res.send('Successful - Data received from sensor:\n' + req.params.key + ': ' + req.params.value);
-    
 });
 
 module.exports = router;

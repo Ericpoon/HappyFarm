@@ -1,0 +1,23 @@
+.notification p {
+    background-color: #89ae44;
+    border-radius: 100px;
+    color: white;
+    padding: 20px;
+    font-size: 20px;
+    font-family: "Apple SD Gothic Neo";
+    position: absolute;
+    bottom: 20px;
+    left: 40px;
+
+    transition: all linear 1s;
+}
+
+.notification .showNotification {
+    left: 40px;
+    opacity: 0.95;
+}
+
+.notification .hideNotification {
+    left: -500px;
+    opacity: 0;
+}

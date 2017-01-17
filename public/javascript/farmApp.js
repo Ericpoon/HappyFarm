@@ -6,6 +6,7 @@ app.controller('farmController', function ($scope, $http, $rootScope) {
 
     function initialize() {
         $rootScope.chatMessages = [];
+        $rootScope.currentChartIndex = 0; // by default, show temperature
         $http.get('/db/getuserinfo').then(function (res) {
             $scope.userInfo = res.data;
             $rootScope.userInfo = $scope.userInfo;
@@ -13,7 +14,32 @@ app.controller('farmController', function ($scope, $http, $rootScope) {
         $http.get('/db/getsensordata').then(function (res) {
             $scope.sensorData = res.data;
             $rootScope.sensorData = $scope.sensorData;
-        })
+            startNotificationLoop();
+        });
+    }
+
+    function startNotificationLoop() {
+        setInterval(function () {
+            $http.get('/db/getlatestdata').then(function (res) {
+                if ($scope.sensorData[$scope.sensorData.length - 1]._id != res.data._id) {
+                    // update chart
+                    var temp = $scope.sensorData;
+                    temp.push(res.data);
+                    var updatedSensorData = temp.slice(1);
+                    $scope.sensorData = updatedSensorData;
+                    $rootScope.sensorData = updatedSensorData;
+                    //
+                    $rootScope.currentCondition = 'New update! Temperature: ' + res.data.temperature.toFixed(2) + ' Celsius.';
+                    var elem = angular.element(document.getElementById('notificationText'));
+                    elem.removeClass('hideNotification');
+                    elem.addClass('showNotification');
+                    setTimeout(function () {
+                        elem.removeClass('showNotification');
+                        elem.addClass('hideNotification');
+                    }, 2000);
+                }
+            });
+        }, 3000);
     }
 
     initialize();
@@ -163,33 +189,25 @@ app.directive('myngRadarChart', function ($window) {
 
 app.directive('myngLineChart', function ($rootScope) {
     function link(scope, element, attrs) {
-        var data;
-        var chartData;
+        var data = null;
+        var chartData = null;
+
+        function removeCurrentChart() {
+            d3.selectAll("#lineChart > *").remove(); // remove the current chart
+        }
+
         scope.$watch('data', function (newValue) {
                 if (newValue !== undefined) {
                     data = newValue;
-
-                    //TODO: get only the last 30
-
-
-                    d3.select("#chartName").text('Temperature');
-                    d3.select("#realTimeDataValue").text(' ' + data[data.length - 1].temperature.toFixed(2));
-                    chartData = data.map(function (a) {
-                        return {
-                            name: 'Temperature',
-                            x: a.time,
-                            y: a.temperature // default
-                            // TODO: should add unit
-                        }
-                    });
-                    makeChart(chartData);
+                    changeToChartIndex($rootScope.currentChartIndex);
                 }
             }
         );
 
-        scope.$on('chartChange', function (event, msg) {
+        function changeToChartIndex(msg) {
             console.log('Change to chart #' + msg);
-            function setLabelAndImg (msg) {
+            function setLabelAndImg(msg) {
+                $rootScope.currentChartIndex = msg;
                 switch (parseInt(msg)) {
                     case 0:
                         d3.select("#chartName").text('Temperature');
@@ -218,9 +236,10 @@ app.directive('myngLineChart', function ($rootScope) {
                         break;
                 }
             }
+
             setLabelAndImg(msg);
             console.log(d3.select("#chartName"));
-            d3.selectAll("#lineChart > *").remove(); // remove the current chart
+            removeCurrentChart();
             switch (parseInt(msg)) {
                 case 0:
                     chartData = data.map(function (a) {
@@ -269,6 +288,10 @@ app.directive('myngLineChart', function ($rootScope) {
                     break;
             }
             makeChart(chartData);
+        }
+
+        scope.$on('chartChange', function (event, msg) {
+            changeToChartIndex(msg);
         });
 
         function makeChart(data) {

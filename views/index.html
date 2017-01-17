@@ -14,7 +14,9 @@
     <link rel="stylesheet" href="/public/css/data.css">
     <link rel="stylesheet" href="/public/css/navigation.css">
     <link rel="stylesheet" href="/public/css/chatbot.css">
+    <link rel="stylesheet" href="/public/css/notification.css">
     <link rel="stylesheet" href="/public/css/nv.d3.css">
+
 
     <!-- D3.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
@@ -46,7 +48,6 @@
     </div>
 </div>
 
-
 <div class="data" ng-if="viewToShow!='welcome'">
     <!-- Left Part -->
     <div class="overallDisplay">
@@ -66,6 +67,11 @@
             <myng-radar-chart data="sensorData">
                 <div id="radarChart"></div>
             </myng-radar-chart>
+        </div>
+
+        <!-- Notification -->
+        <div class="notification">
+            <p id="notificationText" class="hideNotification">{{currentCondition}}</p>
         </div>
 
     </div>

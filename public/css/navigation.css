@@ -1,26 +1,59 @@
 .navigation {
-    background-color: rgb(30, 30, 30);
+    background-color: rgb(35, 35, 35);
 }
 
 .navigation #navigationContainer {
     height: 45px;
-    padding: 10px;
+    padding: 7px;
 }
 
 .navigation #navigationLogo {
     height: 100%;
-    clear: both;
     float: left;
+    padding-left: 3px;
 }
 
 .navigation #companyName {
-    font-size: 25px;
+    font-size: 24px;
     color: rgb(137, 174, 68);
+    /*color: rgb(255, 255, 255);*/
     font-family: "Apple SD Gothic Neo";
-    margin: 0;
-    padding-top: 2px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
     vertical-align: middle;
     padding-left: 10px;
-    line-height: 45px;
     float: left;
+    line-height: 52px; /* 45+7 */
+}
+
+.navigation ul {
+    list-style: none;
+    float: right;
+    margin: 0;
+    top: 0;
+    border: none;
+    box-sizing: border-box;
+}
+
+.navigation ul li {
+    display: inline-block;
+    font-size: 18px;
+    font-family: Aller;
+    color: white;
+    vertical-align: middle;
+    width: 180px;
+    line-height: 39px; /* 45 - 3 * 2 */
+    margin: -7px -7px 0 0;
+    text-align: center;
+    padding: 7px;
+    box-sizing: content-box;
+    border-top: 3px solid rgba(137, 174, 68, 0);
+    border-bottom: 3px solid rgba(137, 174, 68, 1);
+}
+
+.navigation ul li:hover {
+    background-color: rgba(137, 174, 68, 11);
+    /*border-bottom: 3px solid rgba(137, 174, 68, 1);*/
+    cursor: pointer;
 }

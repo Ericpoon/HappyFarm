@@ -22,8 +22,10 @@
   },
   "homepage": "https://github.com/Ericpoon/HappyFarm#readme",
   "dependencies": {
+    "angular-chat": "^1.0.9",
     "body-parser": "^1.15.2",
     "chart.js": "^2.4.0",
+    "cleverbot.io": "^1.0.4",
     "express": "^4.14.0",
     "mongoose": "^4.7.6"
   }

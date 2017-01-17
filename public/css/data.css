@@ -1,11 +1,58 @@
-/* Overall display */
+.data {
+    font-family: "Apple SD Gothic Neo";
+}
 
+/* non-chart related info */
+.data .overallDisplay p.description {
+    clear: both;
+    font-size: 28px;
+    text-align: center;
+}
+
+.data img.plantIcon {
+    padding: 0 20% 0 20%;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.data .iconWrapper {
+    box-sizing: border-box;
+    width: 33.33%;
+    margin: auto;
+    float: left;
+}
+
+.data .upperWrapper {
+    width: 90%;
+    margin: 30px auto auto auto;
+}
+
+.data .nextPlant {
+    text-align: right;
+}
+
+.data .prevPlant {
+    text-align: left;
+}
+
+.data p.button {
+    font-size: 40px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.data p.button:hover {
+    color: #4da1ff;
+}
+
+/* Overall display */
 .overallDisplay {
     width: 38.2%;
-    height: 100%;
+    height: calc(100vh - 59px); /* 45+7+7 */
     float: left;
-    border: 1px solid red;
+    /*border: 1px solid red;*/
     box-sizing: border-box;
+    background-color: rgba(0, 0, 0, 0.06);
 }
 
 .overallDisplay .radarChartDisplay {
@@ -16,33 +63,67 @@
 
 .overallDisplay #radarChart {
     margin: auto;
-    border: 1px solid darkcyan;
+    /*border: 1px solid darkcyan;*/
 }
 
 /* Detailed Display */
 .detailedDisplay {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+
     width: 61.8%;
-    height: 100%;
+    height: calc(100vh - 59px); /* 45+7+7 */
     float: right;
-    border: 1px solid blue;
+    /*border: 1px solid blue;*/
     box-sizing: border-box;
+    background-color: rgb(237, 239, 242);
 }
 
 .detailedDisplay .chartDisplay {
+    clear: both;
     margin: auto;
 }
 
 .detailedDisplay .parameterLabel {
-    font-size: 22px;
+    margin: 25px 0 15px 0;
+    font-size: 30px;
     text-align: center;
 }
 
 .detailedDisplay #lineChart {
     margin: auto;
-    width: 80%;
+    width: 85%;
     height: 500px;
 }
 
+.data .detailedDisplay .realTimeData {
+    transform: translateX(-43px);
+    margin: 50px auto auto auto;
+    vertical-align: middle;
+    text-align: right;
+}
+
+.data .detailedDisplay .paramIcon {
+    height: 100%;
+    margin: auto;
+}
+
+.data .detailedDisplay .paramWrapper {
+    box-sizing: border-box;
+    width: 50%;
+    margin: auto;
+    float: left;
+    /*border: 1px solid red;*/
+    height: 120px;
+}
+
+.data .detailedDisplay .realTimeDataValue {
+    text-align: left;
+    vertical-align: middle;
+    font-size: 35px;
+}
+
+/* d3 related */
 .d3button {
     font-size: 14px;
     fill: #057aff;

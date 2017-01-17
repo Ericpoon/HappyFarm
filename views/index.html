@@ -7,10 +7,13 @@
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
     <script src="/public/javascript/farmApp.js"></script>
     <link rel="stylesheet" href="/public/css/welcome.css">
     <link rel="stylesheet" href="/public/css/data.css">
     <link rel="stylesheet" href="/public/css/navigation.css">
+    <link rel="stylesheet" href="/public/css/chatbot.css">
     <link rel="stylesheet" href="/public/css/nv.d3.css">
 
     <!-- D3.js -->
@@ -22,35 +25,45 @@
 
 <body ng-app="farmApp" ng-controller="farmController">
 
-<div class="welcome" ng-show="showWelcome">
+<div class="welcome" ng-if="viewToShow=='welcome'">
     <div class="inner">
         <img src="/public/images/logo_2.png" class="logo">
-        <p class="description">We simply make things easier. We care about you. We love you.</p>
+        <p class="description">We simply make farming easier. We care about you. We love you.</p>
         <br>
-        <button class="startButton" ng-click="show()">let's do it</button>
+        <button class="startButton" ng-click="enter()">let's do it</button>
     </div>
 </div>
 
 
-<div class="navigation">
+<div class="navigation" ng-if="viewToShow!='welcome'">
     <div id="navigationContainer">
+        <img src="/public/images/logo_4.png" id="navigationLogo">
         <p id="companyName">happy farm</p>
-    </div>
-    <div>
+        <ul>
+            <li ng-click="showData()">Data</li>
+            <li ng-click="showChat()">Chat</li>
+        </ul>
     </div>
 </div>
 
 
-<div class="data">
+<div class="data" ng-if="viewToShow!='welcome'">
     <!-- Left Part -->
     <div class="overallDisplay">
-        <p>Hello, {{userInfo.name}}</p>
-        <hr>
-        Age: {{userInfo.age}}<br>
-        Location: {{userInfo.location}}<br>
-        Level: {{userInfo.level}}<br>
-        Plant: {{userInfo.plant}}<br>
-        startDate: {{userInfo.startDate}}<br>
+
+        <div class="upperWrapper">
+            <div class="iconWrapper">
+                <p class="prevPlant button"><</p>
+            </div>
+            <div class="iconWrapper">
+                <img class='plantIcon' src="/public/images/tomato.png">
+            </div>
+            <div class="iconWrapper">
+                <p class="nextPlant button">></p>
+            </div>
+        </div>
+
+        <p class='description'>{{userInfo.name}}'s {{userInfo.plant}}</p>
 
         <div class="radarChartDisplay" ng-model="radarChartDisplay">
             <myng-radar-chart data="sensorData">
@@ -61,15 +74,29 @@
     </div>
 
     <!-- Right Part -->
-    <div class="detailedDisplay">
+    <!-- -- Detailed Chart -->
+    <div class="detailedDisplay" ng-if="viewToShow=='data'">
+        <b><p class="parameterLabel" id="chartName"></p></b>
+        <hr>
+        <div class="realTimeData">
+            <div class="paramWrapper">
+                <img src="/public/images/temperature.png" class="paramIcon">
+            </div>
+            <div class="paramWrapper">
+                <p class="realTimeDataValue">23.4 Celsius</p>
+            </div>
+        </div>
         <div class="chartDisplay">
             <myng-line-chart data="sensorData" index="0" id="lineChartContainer">
-                <p class="parameterLabel" id="chartName"></p>
                 <div id="lineChart"></div>
             </myng-line-chart>
         </div>
     </div>
 
+    <!-- -- Chat Bot -->
+    <div class="chatbot" ng-if="viewToShow=='chatbot'">
+        <myng-chat></myng-chat>
+    </div>
 </div>
 
 </body>

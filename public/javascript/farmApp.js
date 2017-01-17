@@ -1,29 +1,39 @@
 var app = angular.module('farmApp', []);
 
-app.controller('farmController', function ($scope, $http, $cacheFactory) {
+app.controller('farmController', function ($scope, $http, $rootScope) {
 
-    $scope.showWelcome = true;
+    $scope.viewToShow = 'data';
 
     function initialize() {
+        $rootScope.chatMessages = [];
         $http.get('/db/getuserinfo').then(function (res) {
             $scope.userInfo = res.data;
+            $rootScope.userInfo = $scope.userInfo;
         });
         $http.get('/db/getsensordata').then(function (res) {
             $scope.sensorData = res.data;
+            $rootScope.sensorData = $scope.sensorData;
         })
     }
 
     initialize();
 
-    $scope.show = function () {
-        $scope.showWelcome = false;
+    $scope.enter = function () {
+        $scope.viewToShow = 'data';
     };
 
-    // $scope.show();
+    $scope.showData = function () {
+        $scope.viewToShow = 'data';
+    };
+
+    $scope.showChat = function () {
+        $scope.viewToShow = 'chatbot';
+    };
+
 
 });
 
-app.directive('myngRadarChart', function ($window, $http, $cacheFactory) {
+app.directive('myngRadarChart', function ($window) {
     function link(scope, element, attrs) {
 
         var max = {
@@ -151,7 +161,7 @@ app.directive('myngRadarChart', function ($window, $http, $cacheFactory) {
     }
 });
 
-app.directive('myngLineChart', function ($cacheFactory) {
+app.directive('myngLineChart', function () {
     function link(scope, element, attrs) {
         var data;
         var chartData;
@@ -288,5 +298,104 @@ app.directive('myngLineChart', function ($cacheFactory) {
             'index': '='
         },
         link: link
+    }
+});
+
+app.directive('myngChat', function ($rootScope, $http) {
+    function link(scope) {
+        $jq = jQuery.noConflict();
+        (function () {
+            $jq('.message_input').focus();
+            var Message;
+            Message = function (arg) {
+                this.text = arg.text;
+                this.message_side = arg.message_side;
+                this.draw = function (_this) {
+                    return function () {
+                        var $message;
+                        $message = $jq($jq('.message_template').clone().html());
+                        $message.addClass(_this.message_side).find('.text').html(_this.text);
+                        $jq('.messages').append($message);
+                        return setTimeout(function () {
+                            return $message.addClass('appeared');
+                        }, 0);
+                    };
+                }(this);
+                return this;
+            };
+            $jq(function () {
+                var getMessageText, message_side, sendMessage, respondUser;
+                message_side = 'left'; // plants or other users
+                getMessageText = function () {
+                    var $message_input;
+                    $message_input = $jq('.message_input');
+                    return $message_input.val();
+                };
+                sendMessage = function (text, sender, isNew, autoRespond) {
+                    var $messages, message;
+                    if (text.trim === undefined) {
+                        return;
+                    }
+                    if (text.trim() === '') {
+                        return;
+                    }
+                    $jq('.message_input').val('');
+                    $messages = $jq('.messages');
+                    // sender
+                    message_side = sender;
+                    message = new Message({
+                        text: text,
+                        message_side: message_side
+                    });
+                    message.draw();
+                    if (autoRespond) {
+                        getResponsesAndRespond(text, respondUser);
+                    }
+                    if (isNew) {
+                        $rootScope.chatMessages.push({'text': message.text, 'message_side': message.message_side});
+                    }
+                    return $messages.animate({scrollTop: $messages.prop('scrollHeight')}, 20);
+                };
+                respondUser = function (text) {
+                    sendMessage(text, 'left', true, false);
+                };
+                $jq('.send_message').click(function (e) {
+                    return sendMessage(getMessageText(), 'right', true, true); // user is the sender
+                });
+                $jq('.message_input').keyup(function (e) {
+                    if (e.which === 13) {
+                        return sendMessage(getMessageText(), 'right', true, true); // user is the sender
+                    }
+                });
+                if ($rootScope.chatMessages.length == 0) {
+                    sendMessage("Hey " + $rootScope.userInfo.name + ", what's up?", 'left', true, false);
+                } else {
+                    for (var i = 0; i < $rootScope.chatMessages.length; i++) {
+                        var msg = $rootScope.chatMessages[i];
+                        displayWithDelay(msg); // avoid capturing the wrong value (functional programming)
+                        function displayWithDelay(msg) {
+                            setTimeout(function () {
+                                sendMessage(msg.text, msg.message_side, false, false);
+                            }, 20);
+                        }
+                    }
+                }
+
+                // Algorithm goes here based on $rootScope.sensorData
+                function getResponsesAndRespond(input, callback) {
+                    console.log(input);
+                    $http.get('/chat/' + $rootScope.userInfo.name + '/' + input).then(function (res) {
+                        callback(res.data);
+                    });
+                }
+
+            });
+        }.call(this));
+    }
+
+    return {
+        link: link,
+        restrict: 'E',
+        templateUrl: '/public/html/chat.html'
     }
 });

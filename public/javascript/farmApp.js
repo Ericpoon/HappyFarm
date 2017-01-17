@@ -2,7 +2,7 @@ var app = angular.module('farmApp', []);
 
 app.controller('farmController', function ($scope, $http, $rootScope) {
 
-    $scope.viewToShow = 'data';
+    $scope.viewToShow = 'welcome';
 
     function initialize() {
         $rootScope.chatMessages = [];
@@ -161,15 +161,19 @@ app.directive('myngRadarChart', function ($window) {
     }
 });
 
-app.directive('myngLineChart', function () {
+app.directive('myngLineChart', function ($rootScope) {
     function link(scope, element, attrs) {
         var data;
         var chartData;
-        console.log('chart name', scope.chartName);
         scope.$watch('data', function (newValue) {
                 if (newValue !== undefined) {
-                    console.log('CHANGED');
                     data = newValue;
+
+                    //TODO: get only the last 30
+
+
+                    d3.select("#chartName").text('Temperature');
+                    d3.select("#realTimeDataValue").text(' ' + data[data.length - 1].temperature.toFixed(2));
                     chartData = data.map(function (a) {
                         return {
                             name: 'Temperature',
@@ -185,8 +189,38 @@ app.directive('myngLineChart', function () {
 
         scope.$on('chartChange', function (event, msg) {
             console.log('Change to chart #' + msg);
+            function setLabelAndImg (msg) {
+                switch (parseInt(msg)) {
+                    case 0:
+                        d3.select("#chartName").text('Temperature');
+                        d3.select('#paramIcon').attr('src', '/public/images/temperature.png');
+                        d3.select("#realTimeDataValue").text(' ' + data[data.length - 1].temperature.toFixed(2));
+                        break;
+                    case 1:
+                        d3.select("#chartName").text('Humidity');
+                        d3.select('#paramIcon').attr('src', '/public/images/humidity.png');
+                        d3.select("#realTimeDataValue").text(' ' + data[data.length - 1].humidity.toFixed(2));
+                        break;
+                    case 2:
+                        d3.select("#chartName").text('Sunlight');
+                        d3.select('#paramIcon').attr('src', '/public/images/sunlight.png');
+                        d3.select("#realTimeDataValue").text(' ' + data[data.length - 1].sunlight.toFixed(2));
+                        break;
+                    case 3:
+                        d3.select("#chartName").text('Soil');
+                        d3.select('#paramIcon').attr('src', '/public/images/soil.png');
+                        d3.select("#realTimeDataValue").text(' ' + data[data.length - 1].soilQuality.toFixed(2));
+                        break;
+                    case 4:
+                        d3.select("#chartName").text('Acidity');
+                        d3.select('#paramIcon').attr('src', '/public/images/acidity.png');
+                        d3.select("#realTimeDataValue").text(' ' + data[data.length - 1].acidity.toFixed(2));
+                        break;
+                }
+            }
+            setLabelAndImg(msg);
+            console.log(d3.select("#chartName"));
             d3.selectAll("#lineChart > *").remove(); // remove the current chart
-            console.log(parseInt(msg) == 0);
             switch (parseInt(msg)) {
                 case 0:
                     chartData = data.map(function (a) {
@@ -238,7 +272,6 @@ app.directive('myngLineChart', function () {
         });
 
         function makeChart(data) {
-            document.getElementById('chartName').innerHTML = data[0].name; // TODO: hard coded, not good
             // Wrapping in nv.addGraph allows for '0 timeout render', stores rendered charts in nv.graphs, and may do more in the future... it's NOT required
             var chart;
             nv.addGraph(function () {

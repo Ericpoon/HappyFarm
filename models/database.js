@@ -100,7 +100,10 @@ function getUserInfo(user, completion) {
     });
 }
 function getSensorData(user, completion) {
-    Data.find({'user': user}, {}, function (err, docs) {
+    Data.find({'user': user}, {}, {sort: {time: 1}}, function (err, docs) {
+        if (docs.length > 30) {
+            docs = docs.slice(docs.length - 30);
+        }
         completion(docs);
     });
 }

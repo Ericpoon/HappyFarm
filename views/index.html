@@ -50,7 +50,6 @@
 <div class="data" ng-if="viewToShow!='welcome'">
     <!-- Left Part -->
     <div class="overallDisplay">
-
         <div class="upperWrapper">
             <div class="iconWrapper">
                 <p class="prevPlant button"><</p>
@@ -62,9 +61,7 @@
                 <p class="nextPlant button">></p>
             </div>
         </div>
-
         <p class='description'>{{userInfo.name}}'s {{userInfo.plant}}</p>
-
         <div class="radarChartDisplay" ng-model="radarChartDisplay">
             <myng-radar-chart data="sensorData">
                 <div id="radarChart"></div>
@@ -80,10 +77,10 @@
         <hr>
         <div class="realTimeData">
             <div class="paramWrapper">
-                <img src="/public/images/temperature.png" class="paramIcon">
+                <img src="/public/images/temperature.png" id="paramIcon">
             </div>
             <div class="paramWrapper">
-                <p class="realTimeDataValue">23.4 Celsius</p>
+                <p id="realTimeDataValue"></p>
             </div>
         </div>
         <div class="chartDisplay">

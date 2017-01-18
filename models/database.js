@@ -69,6 +69,13 @@ function initialize(needNewData) {
             });
         }
 
+        Data.remove({}, function (err) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('Randomizing new data...');
+            }
+        });
         for (var i = 0; i < 100; i++) {
             var newData = new Data({
                 user: 'Eric',
@@ -77,7 +84,7 @@ function initialize(needNewData) {
                 sunlight: Math.random() * 100,      // 0  - 100
                 acidity: 2 + Math.random() * 10,    // 2  - 12
                 soilQuality: Math.random() * 100,    // 0  - 100
-                time: 20170109135639 + i * 10000
+                time: Date.now() + i * 40
             });
             newData.save(function (err, product) {
                 if (err) {
@@ -89,7 +96,7 @@ function initialize(needNewData) {
     }
 }
 
-initialize(false);
+initialize(true);
 
 // ************************************************ //
 
@@ -107,27 +114,62 @@ function getSensorData(user, completion) {
         completion(docs);
     });
 }
+
+function saveNewData(data, completion) {
+    var newData = new Data({
+        user: 'Eric',
+        temperature: data.temperature,
+        humidity: data.humidity,
+        sunlight: data.sunlight,
+        acidity: data.acidity,
+        soilQuality: data.soilQuality,
+        time: Date.now()
+    });
+    newData.save(function (err, newDoc) {
+        if (err) {
+            console.log(err);
+        } else {
+            completion(newDoc);
+        }
+    });
+
+}
+
 function getLatestData(user, completion) {
     Data.find({'user': user}, {}, {sort: {time: 1}}, function (err, docs) {
-        if (docs.length > 0) {
-            docs = docs.slice(docs.length - 1);
+        var lastDoc = docs[docs.length - 1];
+        if (!lastDocID) {
+            lastDocID = lastDoc._id;
+            completion({_id:'NULL'});
+        } else if (!lastDocID.equals(lastDoc._id)) {
+            lastDocID = lastDoc._id;
+            completion(lastDoc);
+            console.log('New data sending back to Frontend');
+        } else {
+            completion({_id:'NULL'});
         }
-        // completion(docs);
 
-        completion({
-            _id: a,
-            user: 'Eric',
-            temperature: Math.random() * 30,    // 0  - 30
-            humidity: 20 + Math.random() * 70,  // 20 - 90
-            sunlight: Math.random() * 100,      // 0  - 100
-            acidity: 2 + Math.random() * 10,    // 2  - 12
-            soilQuality: Math.random() * 100,    // 0  - 100
-            time: a
-        });
-        a += 10000;
+        // completion({
+        //     _id: a,
+        //     user: 'Eric',
+        //     temperature: Math.random() * 30,    // 0  - 30
+        //     humidity: 20 + Math.random() * 70,  // 20 - 90
+        //     sunlight: Math.random() * 100,      // 0  - 100
+        //     acidity: 2 + Math.random() * 10,    // 2  - 12
+        //     soilQuality: Math.random() * 100,    // 0  - 100
+        //     time: a
+        // });
+        // a += 10000;
     });
 }
 
-var a = 20170110125699;
+var lastDocID = null;
 
-module.exports = {'getUserInfo': getUserInfo, 'getSensorData': getSensorData, 'getLatestData': getLatestData};
+// var a = 20170110135639 + 10000;
+
+module.exports = {
+    'getUserInfo': getUserInfo,
+    'getSensorData': getSensorData,
+    'getLatestData': getLatestData,
+    'saveNewData': saveNewData
+};

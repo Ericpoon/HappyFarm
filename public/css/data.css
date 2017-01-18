@@ -98,14 +98,15 @@
 }
 
 .data .detailedDisplay .realTimeData {
-    transform: translateX(12px);
+    transform: translateX(-14px) translateY(-10px);
     margin: 50px auto auto auto;
     vertical-align: middle;
     text-align: right;
 }
 
 .data .detailedDisplay #paramIcon {
-    height: 100%;
+    transform: translateY(4px);
+    height: 65%;
     margin: auto;
 }
 
@@ -119,6 +120,7 @@
 }
 
 .data .detailedDisplay #realTimeDataValue {
+    transform: translateX(5px) translateY(-12px);
     text-align: left;
     vertical-align: middle;
     font-size: 35px;

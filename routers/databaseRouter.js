@@ -5,13 +5,8 @@ var database = require(__modeldir + '/database.js');
 
 // 127.0.0.1/db/test
 router.get('/test', function (req, res) {
-    // console.log('Client connecting to database');
-    // res.send('Database connected.');
-    function completion(data) {
-        res.send(data);
-    }
-
-    database.getLatestData('Eric', completion);
+    console.log('Client connecting to database');
+    res.send('Database connected.');
 });
 
 router.get('/getuserinfo', function (req, res) {
@@ -29,6 +24,7 @@ router.get('/getsensordata', function (req, res) {
 
     database.getSensorData('Eric', completion);
 });
+
 router.get('/getlatestdata', function (req, res) {
     function completion(data) {
         res.send(data);
@@ -38,8 +34,10 @@ router.get('/getlatestdata', function (req, res) {
 });
 
 // receive data from sensor
-router.post('/postdata/:key/:value', function (req, res) {
-    res.send('Successful - Data received from sensor:\n' + req.params.key + ': ' + req.params.value);
+router.post('/postdata/:temperature/:humidity/:sunlight/:soilQuality/:acidity', function (req, res) {
+    database.saveNewData(req.params, function (newData) {
+        res.send(newData);
+    });
 });
 
 module.exports = router;

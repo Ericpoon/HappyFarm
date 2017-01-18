@@ -21,7 +21,7 @@ app.controller('farmController', function ($scope, $http, $rootScope) {
     function startNotificationLoop() {
         setInterval(function () {
             $http.get('/db/getlatestdata').then(function (res) {
-                if ($scope.sensorData[$scope.sensorData.length - 1]._id != res.data._id) {
+                if (res.data._id != 'NULL') {
                     // update chart
                     var temp = $scope.sensorData;
                     temp.push(res.data);
@@ -134,23 +134,23 @@ app.directive('myngRadarChart', function ($window) {
                 [// Data
                     {
                         axis: "Temperature",
-                        value: 1 - Math.abs(latestData.temperature - optimal.temperature) / optimal.temperature
+                        value: Math.max(1 - Math.abs(latestData.temperature - optimal.temperature) / optimal.temperature, 0.1)
                     },
                     {
                         axis: "Humidity",
-                        value: 1 - Math.abs(latestData.humidity - optimal.humidity) / optimal.humidity
+                        value: Math.max(1 - Math.abs(latestData.humidity - optimal.humidity) / optimal.humidity, 0.1)
                     },
                     {
                         axis: "Sunlight",
-                        value: 1 - Math.abs(latestData.sunlight - optimal.sunlight) / optimal.sunlight
+                        value: Math.max(1 - Math.abs(latestData.sunlight - optimal.sunlight) / optimal.sunlight, 0.1)
                     },
                     {
                         axis: "Soil",
-                        value: 1 - Math.abs(latestData.soilQuality - optimal.soilQuality) / optimal.soilQuality
+                        value: Math.max(1 - Math.abs(latestData.soilQuality - optimal.soilQuality) / optimal.soilQuality, 0.1)
                     },
                     {
                         axis: "Acidity",
-                        value: 1 - Math.abs(latestData.acidity - optimal.acidity) / optimal.acidity
+                        value: Math.max(1 - Math.abs(latestData.acidity - optimal.acidity) / optimal.acidity, 0.1)
                     }
                 ]
 
@@ -238,7 +238,6 @@ app.directive('myngLineChart', function ($rootScope) {
             }
 
             setLabelAndImg(msg);
-            console.log(d3.select("#chartName"));
             removeCurrentChart();
             switch (parseInt(msg)) {
                 case 0:

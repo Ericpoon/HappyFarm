@@ -33,11 +33,33 @@ router.get('/getlatestdata', function (req, res) {
     database.getLatestData('Eric', completion);
 });
 
+router.get('/gettodolist', function (req, res) {
+    function completion(data) {
+        res.send(data);
+    }
+
+    database.getTodoList('Eric', completion);
+});
+
 // receive data from sensor
 router.post('/postdata/:temperature/:humidity/:sunlight/:soilQuality/:acidity', function (req, res) {
-    database.saveNewData(req.params, function (newData) {
+    database.saveNewData('Eric', req.params, function (newData) {
         res.send(newData);
     });
 });
+router.post('/addtodo/:todo', function (req, res) {
+    function completion(data) {
+        res.send(data);
+    }
 
+    database.addTodo('Eric', req.params.todo, completion);
+});
+
+router.delete('/removetodo/:id', function (req, res) {
+    function completion(data) {
+        res.send(data);
+    }
+
+    database.removeTodo(req.params.id, completion);
+});
 module.exports = router;

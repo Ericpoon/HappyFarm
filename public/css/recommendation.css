@@ -1,0 +1,118 @@
+.recommendation .unselectable {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.recommendation {
+    height: calc(100vh - 59px);
+    float: right;
+    width: 61.8%;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    background-color: #edeff2;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.recommendation * {
+    font-family: "Apple SD Gothic Neo";
+}
+
+.recommendation p.title {
+    margin: 25px 0 15px 0;
+    font-size: 30px;
+    text-align: center;
+}
+
+.recommendation ul {
+    list-style: none;
+    padding: 0;
+    margin: 45px auto 0 auto;
+    color: #2ca02c;
+    width: 100%;
+    text-align: left;
+}
+
+.recommendation ul li {
+    border-radius: 1000px 0 0 1000px;
+    background-color: #dceddb;
+    font-size: 20px;
+    width: 70%;
+    margin: 20px 0;
+    clear: both;
+    float: left;
+    height: 70px;
+    line-height: 70px;
+    padding-left: 60px;
+    transition: 200ms;
+    white-space: nowrap;
+}
+
+.recommendation ul li:hover {
+    background-color: #2ca02c;
+    color: white;
+    cursor: pointer;
+}
+
+.recommendation li.checked {
+    position: relative;
+    text-decoration: line-through;
+}
+
+.recommendation li.checked::before {
+    content: '';
+    position: absolute;
+    border-color: #2ca02c;
+    border-style: solid;
+    border-width: 0 2px 2px 0;
+    top: 25cpx;
+    left: 23px;
+    transform: rotate(45deg);
+    height: 14px;
+    width: 6px;
+    margin-left: 10px;
+}
+
+.recommendation li.checked:hover::before {
+    border-color: white;
+}
+
+.recommendation .closeButton {
+    border-radius: 0 1000px 1000px 0;
+    background-color: #dceddb;
+    width: 70px;
+    height: 70px;
+    border: none;
+    font-size: 18px;
+    color: #f8522e;
+    /*border-left: 1px solid white;*/
+    box-sizing: border-box;
+    cursor: pointer;
+    margin: 20px 0;
+    transition: 200ms;
+}
+
+.recommendation .closeButton:hover {
+    background-color: #f8522e;
+    color: white;
+}
+
+.recommendation .element {
+    margin-left: 11%;
+}
+
+.recommendation .todoList {
+    height: 70%;
+    overflow: scroll;
+}
+
+.recommendation .fadeoff {
+    opacity: 0;
+    height: 0;
+    padding: 0;
+    margin: 0;
+    font-size: 100px;
+    /*transform: translateX(-100px);*/
+}

@@ -7,6 +7,7 @@
     clear: both;
     font-size: 28px;
     text-align: center;
+    color: rgb(21, 71, 17);
 }
 
 .data img.plantIcon {
@@ -39,12 +40,38 @@
     font-size: 40px;
     vertical-align: middle;
     cursor: pointer;
+    color: rgb(146, 184, 58);
 }
 
 .data p.button:hover {
-    color: #4da1ff;
+    color: rgb(87, 151, 46);
 }
 
+/* Overall display */
+.overallDisplay {
+    width: 38.2%;
+    height: calc(100vh - 59px); /* 45+7+7 */
+    float: left;
+    /*border: 1px solid red;*/
+    box-sizing: border-box;
+    background-color: rgb(240, 240, 240);
+}
+
+.overallDisplay:hover {
+    background-color: rgb(245, 245, 245);
+}
+
+.overallDisplay .radarChartDisplay {
+    transform: translateY(-30px);
+    text-align: center;
+    width: 90%;
+    margin: auto;
+}
+
+.overallDisplay #radarChart {
+    margin: auto;
+    /*border: 1px solid darkcyan;*/
+}
 /* Overall display */
 .overallDisplay {
     width: 38.2%;
@@ -129,11 +156,12 @@
 /* d3 related */
 .d3button {
     font-size: 14px;
-    fill: #057aff;
+    fill: rgb(146, 184, 58);
 }
 
 .d3button:hover {
     font-size: 17px;
-    fill: #1c39ff;
+    fill: rgb(87, 151, 46);
     cursor: pointer;
+    font-weight: bold;
 }

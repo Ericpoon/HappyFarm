@@ -2,11 +2,25 @@ var app = angular.module('farmApp', []);
 
 app.controller('farmController', function ($scope, $http, $rootScope) {
 
-    $scope.viewToShow = 'welcome';
+    $rootScope.viewToShow = 'recommendation';
 
     function initialize() {
         $rootScope.chatMessages = [];
         $rootScope.currentChartIndex = 0; // by default, show temperature
+        $rootScope.max = {
+            temperature: 25,
+            humidity: 40,
+            sunlight: 70,
+            soilQuality: 100,
+            acidity: 8
+        };
+        $rootScope.min = {
+            temperature: 13,
+            humidity: 18,
+            sunlight: 25,
+            soilQuality: 72,
+            acidity: 5
+        };
         $http.get('/db/getuserinfo').then(function (res) {
             $scope.userInfo = res.data;
             $rootScope.userInfo = $scope.userInfo;
@@ -36,46 +50,38 @@ app.controller('farmController', function ($scope, $http, $rootScope) {
                     setTimeout(function () {
                         elem.removeClass('showNotification');
                         elem.addClass('hideNotification');
-                    }, 2000);
+                    }, 5000);
                 }
             });
-        }, 3000);
+        }, 1000);
     }
 
     initialize();
 
     $scope.enter = function () {
-        $scope.viewToShow = 'data';
+        $rootScope.viewToShow = 'data';
     };
 
     $scope.showData = function () {
-        $scope.viewToShow = 'data';
+        $rootScope.viewToShow = 'data';
     };
 
     $scope.showChat = function () {
-        $scope.viewToShow = 'chatbot';
+        $rootScope.viewToShow = 'chatbot';
     };
 
+    $scope.showRecommendation = function () {
+        $rootScope.viewToShow = 'recommendation';
+    }
 
 });
 
-app.directive('myngRadarChart', function ($window) {
+app.directive('myngRadarChart', function ($window, $rootScope) {
     function link(scope, element, attrs) {
 
-        var max = {
-            temperature: 25,
-            humidity: 40,
-            sunlight: 70,
-            soilQuality: 100,
-            acidity: 8
-        };
-        var min = {
-            temperature: 13,
-            humidity: 18,
-            sunlight: 25,
-            soilQuality: 72,
-            acidity: 5
-        };
+        var max = $rootScope.max;
+        var min = $rootScope.min;
+
         var optimal = {
             temperature: (max.temperature + min.temperature) / 2,
             humidity: (max.humidity + min.humidity) / 2,
@@ -158,7 +164,7 @@ app.directive('myngRadarChart', function ($window) {
             // draw the chart
 
             var color = d3.scale.ordinal()
-                .range(["#dbdbdb", "#057aff"]); // minimal, data
+                .range(["#b7b7b7", "rgb(146,184,58)"]); // minimal, data
 
             var radarChartOptions = {
                 w: width,
@@ -305,7 +311,9 @@ app.directive('myngLineChart', function ($rootScope) {
                 // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the parent chart, so need to chain separately
                 chart.xAxis
                     .axisLabel("Time")
-                    .tickFormat(d3.format(','))
+                    .tickFormat(function (d) {
+                        return d3.time.format('%b %d')(new Date(d));
+                    })
                     .staggerLabels(true);
                 chart.yAxis
                     .axisLabel(data[0].name)
@@ -327,16 +335,65 @@ app.directive('myngLineChart', function ($rootScope) {
                 var history = [],
                     max = [],
                     min = [];
+                var avg = 0;
+                var maxValue = -9999;
+                var minValue = +9999;
+                var diff;
+                data.map(function (a) {
+                    avg += a.y;
+                    if (a.y > maxValue) {
+                        maxValue = a.y;
+                    }
+                    if (a.y < minValue) {
+                        minValue = a.y;
+                    }
+                });
+                avg = avg / data.length;
+                diff = maxValue - minValue;
+                var name = data[0].name;
+                if (name == 'Temperature') {
+                    name = 'temperature';
+                } else if (name == 'Humidity') {
+                    name = 'humidity';
+                } else if (name == 'Sunlight') {
+                    name = 'sunlight';
+                } else if (name == 'Soil') {
+                    name = 'soilQuality';
+                } else if (name == 'Acidity') {
+                    name = 'acidity';
+                }
                 data.map(function (a) {
                     history.push({x: a.x, y: a.y});
+                    // max.push({x: a.x, y: avg * 1.25 + (Math.random() - 0.5) * diff * 0});
+                    // min.push({x: a.x, y: avg * 0.75 + (Math.random() - 0.5) * diff * 0});
+                    max.push({x: a.x, y: $rootScope.max[name]});
+                    min.push({x: a.x, y: $rootScope.min[name]});
                 });
 
                 return [
                     {
-                        area: true,
+                        area: false,
+                        values: max,
+                        key: 'Max',
+                        color: "rgba(192,23,51,0.9)",
+                        strokeWidth: 4,
+                        classed: 'dashed',
+                        fillOpacity: .1
+                    },
+                    {
+                        area: false,
+                        values: min,
+                        key: 'Min',
+                        color: "rgba(254,196,45,0.9)",
+                        strokeWidth: 4,
+                        classed: 'dashed',
+                        fillOpacity: .1
+                    },
+                    {
+                        area: false,
                         values: history,
                         key: data[0].name,
-                        color: "#ff7f0e",
+                        color: 'rgba(156,204,78,0.9)',
                         strokeWidth: 4,
                         classed: 'dashed',
                         fillOpacity: .1
@@ -438,10 +495,129 @@ app.directive('myngChat', function ($rootScope, $http) {
 
                 // Algorithm goes here based on $rootScope.sensorData
                 function getResponsesAndRespond(input, callback) {
-                    console.log(input);
+                    /**
+                     *
+                     * @param str the input string
+                     * @param required the required keywords, all the required keywords should be in the input string
+                     * @param optionals several optional sets of keywords, for each set at least one keyword should be in the input string
+                     * @returns {boolean} a flag indicating whether the str is related the topic or not
+                     */
+                    function contains(str, required, optionals) {
+                        var flag = true;
+                        for (var i = 0; i < required.length; i++) {
+                            if (!str.toLowerCase().includes(required[i])) {
+                                flag = false;
+                            }
+                        }
+                        if (!flag) {
+                            return false;
+                        }
+                        for (var i = 0; i < optionals.length; i++) {
+                            flag = false;
+                            for (var j = 0; j < optionals[i].length; j++) {
+                                if (str.toLowerCase().includes(optionals[i][j])) {
+                                    flag = true;
+                                    break;
+                                }
+                            }
+                            if (!flag) {
+                                return false;
+                            }
+                        }
+                        return flag;
+                    }
+
+                    var temperatureRelated = ['temperature', 'cold', 'hot', 'temp'];
+                    var humidityRelated = ['humidity', 'wet', 'dry'];
+                    var sunlightRelated = ['sunlight', 'sunny', 'cloudy'];
+                    var acidityRelated = ['acidity', 'ph'];
+                    var soilRelated = ['soil'];
+
+                    var graphRelated = ['chart', 'diagram', 'graph'];
+                    var realtimeRelated = ['now', 'current', 'currently', 'realtime', 'real time', 'real-time'];
+
+                    if (contains(input, [], [temperatureRelated, graphRelated])) {
+                        $rootScope.viewToShow = 'data';
+                        $rootScope.currentChartIndex = 0;
+                        return;
+                    } else if (contains(input, [], [humidityRelated, graphRelated])) {
+                        $rootScope.viewToShow = 'data';
+                        $rootScope.currentChartIndex = 1;
+                        return;
+                    } else if (contains(input, [], [sunlightRelated, graphRelated])) {
+                        $rootScope.viewToShow = 'data';
+                        $rootScope.currentChartIndex = 2;
+                        return;
+                    } else if (contains(input, [], [soilRelated, graphRelated])) {
+                        $rootScope.viewToShow = 'data';
+                        $rootScope.currentChartIndex = 3;
+                        return;
+                    } else if (contains(input, [], [acidityRelated, graphRelated])) {
+                        $rootScope.viewToShow = 'data';
+                        $rootScope.currentChartIndex = 4;
+                        return;
+                    } else if (contains(input, [], [temperatureRelated, realtimeRelated])) {
+                        var realtime = $rootScope.sensorData[$rootScope.sensorData.length - 1].temperature.toFixed(0);
+                        var max = $rootScope.max.temperature.toFixed(0);
+                        var min = $rootScope.min.temperature.toFixed(0);
+                        var responses = respondPlantRelated(0, realtime, max, min);
+                        setTimeout(function () {
+                            for (var i = 0; i < responses.length; i++) {
+                                callback(responses[i]);
+                            }
+                        }, 500);
+                        return;
+                    } else if (contains(input, [], [humidityRelated, realtimeRelated])) {
+                        var realtime = $rootScope.sensorData[$rootScope.sensorData.length - 1].humidity.toFixed(0);
+                        var max = $rootScope.max.humidity.toFixed(0);
+                        var min = $rootScope.min.humidity.toFixed(0);
+                        var responses = respondPlantRelated(1, realtime, max, min);
+                        setTimeout(function () {
+                            for (var i = 0; i < responses.length; i++) {
+                                callback(responses[i]);
+                            }
+                        }, 500);
+                        return;
+                    } else if (contains(input, [], [sunlightRelated, realtimeRelated])) {
+                        var realtime = $rootScope.sensorData[$rootScope.sensorData.length - 1].sunlight.toFixed(0);
+                        var max = $rootScope.max.sunlight.toFixed(0);
+                        var min = $rootScope.min.sunlight.toFixed(0);
+                        var responses = respondPlantRelated(2, realtime, max, min);
+                        setTimeout(function () {
+                            for (var i = 0; i < responses.length; i++) {
+                                callback(responses[i]);
+                            }
+                        }, 500);
+                        return;
+                    } else if (contains(input, [], [soilRelated, realtimeRelated])) {
+                        var realtime = $rootScope.sensorData[$rootScope.sensorData.length - 1].soilQuality.toFixed(0);
+                        var max = $rootScope.max.soilQuality.toFixed(0);
+                        var min = $rootScope.min.soilQuality.toFixed(0);
+                        var responses = respondPlantRelated(3, realtime, max, min);
+                        setTimeout(function () {
+                            for (var i = 0; i < responses.length; i++) {
+                                callback(responses[i]);
+                            }
+                        }, 500);
+                        return;
+                    } else if (contains(input, [], [acidityRelated, realtimeRelated])) {
+                        var realtime = $rootScope.sensorData[$rootScope.sensorData.length - 1].acidity.toFixed(0);
+                        var max = $rootScope.max.acidity.toFixed(0);
+                        var min = $rootScope.min.acidity.toFixed(0);
+                        var responses = respondPlantRelated(4, realtime, max, min);
+                        setTimeout(function () {
+                            for (var i = 0; i < responses.length; i++) {
+                                callback(responses[i]);
+                            }
+                        }, 500);
+                        return;
+                    }
+
+
                     $http.get('/chat/' + $rootScope.userInfo.name + '/' + input).then(function (res) {
                         callback(res.data);
                     });
+
                 }
 
             });
@@ -454,3 +630,98 @@ app.directive('myngChat', function ($rootScope, $http) {
         templateUrl: '/public/html/chat.html'
     }
 });
+
+app.directive('myngRecommendation', function ($http) {
+    function link(scope, element, attrs) {
+        $http.get('/db/gettodolist').then(function (res) {
+            scope.list = res.data;
+        });
+        scope.check = function (n) {
+            var text = angular.element(document.getElementById(n._id).childNodes[1]);
+            var button = angular.element(document.getElementById(n._id).childNodes[3]);
+            if (text.hasClass('checked')) {
+                text.removeClass('checked');
+                button.removeClass('checked');
+            } else {
+                text.addClass('checked');
+                button.addClass('checked');
+            }
+        };
+        scope.remove = function (n) {
+            var text = angular.element(document.getElementById(n._id).childNodes[1]);
+            var button = angular.element(document.getElementById(n._id).childNodes[3]);
+            $http.delete('/db/removetodo/' + n._id).then(function (res) {
+                console.log(res);
+            });
+            text.addClass('fadeoff');
+            button.addClass('fadeoff');
+            setTimeout(function () {
+                document.getElementById(n._id).remove();
+            }, 300)
+
+        };
+    }
+
+    return {
+        link: link,
+        restrict: 'E',
+        templateUrl: '/public/html/recommendation.html'
+    }
+});
+
+
+function respondPlantRelated(type, realtime, max, min) {
+    switch (type) {
+        case 0: // temperature
+            if (realtime > max) {
+                if ((realtime - max) / max > 0.15) {
+                    // extremely hot
+                    return [
+                        // three sentences will be sent in a row
+                        "OMG, I'm dying from the extremely hot weather!",
+                        realtime + " Celsius, can you imagine?!",
+                        "I urgently need a place less than " + max + " Celsius!"
+                    ];
+                }
+                // just hot
+                return [
+                    // two sentences will be sent in a row
+                    "It's kinda hot outside!",
+                    "It's " + realtime + " Celsius, I prefer less than " + max
+                ];
+            } else if (realtime < min) {
+                if ((min - realtime) / min > 0.15) {
+                    // extremely cold
+                    return [
+                        // three sentences will be sent in a row
+                        "Do you know I'm dying from the coldness outside?!",
+                        realtime + " Celsius, I need some warmth",
+                        "Would you mind spending more time on me, taking good care of me and putting me where's ABOVE " + realtime + " ?!!!"
+                    ]
+                }
+                // just cold
+                return [
+                    // only one sentence will be sent out
+                    "It's like " + realtime + " celsius outside... Would be great if it's above " + min + "."
+                ];
+            } else {
+                // feeling great
+                return [
+                    // two sentences will be sent in a row
+                    "Ahhh It's like " + realtime + ", which is good! Thanks for asking <3",
+                    "Have a good one <3"
+                ];
+            }
+        case 1: // humidity
+        // THANKS BASY
+
+
+        case 2: // sunlight
+
+        case 3: // soil
+
+        case 4: // acidity
+
+    }
+
+}

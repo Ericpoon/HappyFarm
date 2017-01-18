@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="/public/css/navigation.css">
     <link rel="stylesheet" href="/public/css/chatbot.css">
     <link rel="stylesheet" href="/public/css/notification.css">
+    <link rel="stylesheet" href="/public/css/recommendation.css">
     <link rel="stylesheet" href="/public/css/nv.d3.css">
 
 
@@ -43,6 +44,7 @@
         <p id="companyName">happy farm</p>
         <ul>
             <li ng-click="showData()">Data</li>
+            <li ng-click="showRecommendation()">Recommendation</li>
             <li ng-click="showChat()">Chat</li>
         </ul>
     </div>
@@ -79,7 +81,7 @@
     <!-- Right Part -->
     <!-- -- Detailed Chart -->
     <div class="detailedDisplay" ng-if="viewToShow=='data'">
-        <b><p class="parameterLabel" id="chartName"></p></b>
+        <p class="parameterLabel" id="chartName"></p>
         <hr>
         <div class="realTimeData">
             <div class="paramWrapper">
@@ -100,6 +102,12 @@
     <div class="chatbot" ng-if="viewToShow=='chatbot'">
         <myng-chat></myng-chat>
     </div>
+    <!-- -- Recommendation -->
+    <div class="recommendation" ng-if="viewToShow=='recommendation'">
+        <myng-recommendation ng-model="list">
+        </myng-recommendation>
+    </div>
+
 </div>
 
 </body>

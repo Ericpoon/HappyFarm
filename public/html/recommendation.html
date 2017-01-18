@@ -1,0 +1,8 @@
+<p class="title">Recommended Todo List</p>
+<hr>
+<ul class="todoList unselectable">
+    <div class="element" ng-repeat="n in list" id="{{n._id}}">
+        <li ng-click="check(n)">{{n.text}}</li>
+        <input ng-click="remove(n)" class="closeButton" type="button" value="x">
+    </div>
+</ul>

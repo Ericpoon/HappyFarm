@@ -31,18 +31,17 @@ var dataSchema = mongoose.Schema({
     time: 'Number' // 20170109135639
 });
 
-var behaviourSchema = mongoose.Schema({
+var todoSchema = mongoose.Schema({
     user: 'String',
-    behaviour: 'String',
-    amount: 'Number',
-    time: 'Number' // 20170109135639
+    text: 'String',
+    time: 'Number'
 });
 
 // var plantSchema;
 
 var User = mongoose.model('users', userSchema);
 var Data = mongoose.model('data', dataSchema);
-var Behaviour = mongoose.model('behaviours', behaviourSchema);
+var Todo = mongoose.model('todo', todoSchema);
 
 function initialize(needNewData) {
     console.log('database.js - Initializing database');
@@ -84,7 +83,7 @@ function initialize(needNewData) {
                 sunlight: Math.random() * 100,      // 0  - 100
                 acidity: 2 + Math.random() * 10,    // 2  - 12
                 soilQuality: Math.random() * 100,    // 0  - 100
-                time: Date.now() + i * 40
+                time: Date.now() - i * 86400000
             });
             newData.save(function (err, product) {
                 if (err) {
@@ -115,9 +114,9 @@ function getSensorData(user, completion) {
     });
 }
 
-function saveNewData(data, completion) {
+function saveNewData(user, data, completion) {
     var newData = new Data({
-        user: 'Eric',
+        user: user,
         temperature: data.temperature,
         humidity: data.humidity,
         sunlight: data.sunlight,
@@ -140,13 +139,13 @@ function getLatestData(user, completion) {
         var lastDoc = docs[docs.length - 1];
         if (!lastDocID) {
             lastDocID = lastDoc._id;
-            completion({_id:'NULL'});
+            completion({_id: 'NULL'});
         } else if (!lastDocID.equals(lastDoc._id)) {
             lastDocID = lastDoc._id;
             completion(lastDoc);
             console.log('New data sending back to Frontend');
         } else {
-            completion({_id:'NULL'});
+            completion({_id: 'NULL'});
         }
 
         // completion({
@@ -163,6 +162,42 @@ function getLatestData(user, completion) {
     });
 }
 
+function getTodoList(user, completion) {
+    Todo.find({'user': user}, {}, {sort: {time: 1}}, function (err, docs) {
+        if (!err) {
+            completion(docs);
+        } else {
+            completion(null);
+        }
+    });
+
+}
+
+function addTodo(user, todo, completion) {
+    var newTodo = new Todo({
+        user: user,
+        text: todo,
+        time: Date.now()
+    });
+    newTodo.save(function (err, newDoc) {
+        if (err){
+            console.log('database.js - Fail to add new todo - ' + err);
+        } else {
+            completion(newDoc);
+        }
+    });
+}
+
+function removeTodo(id, completion) {
+    Todo.remove({'_id': id}, function (err, docs) {
+        if (!err) {
+            completion(docs);
+        } else {
+            completion(null);
+        }
+    });
+}
+
 var lastDocID = null;
 
 // var a = 20170110135639 + 10000;
@@ -171,5 +206,8 @@ module.exports = {
     'getUserInfo': getUserInfo,
     'getSensorData': getSensorData,
     'getLatestData': getLatestData,
-    'saveNewData': saveNewData
+    'saveNewData': saveNewData,
+    'getTodoList': getTodoList,
+    'addTodo': addTodo,
+    'removeTodo': removeTodo
 };

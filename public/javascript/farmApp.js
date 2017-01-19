@@ -2,7 +2,7 @@ var app = angular.module('farmApp', []);
 
 app.controller('farmController', function ($scope, $http, $rootScope) {
 
-    $rootScope.viewToShow = 'recommendation';
+    $rootScope.viewToShow = 'welcome';
 
     function initialize() {
         $rootScope.chatMessages = [];

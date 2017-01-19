@@ -40,8 +40,8 @@
 
 <div class="navigation" ng-if="viewToShow!='welcome'">
     <div id="navigationContainer">
-        <img src="/public/images/logo_4.png" id="navigationLogo">
-        <p id="companyName">happy farm</p>
+        <img src="/public/images/logo_4.png" id="navigationLogo" ng-click="showWelcome()">
+        <p id="companyName" ng-click="showWelcome()">happy farm</p>
         <ul>
             <li ng-click="showData()">Data</li>
             <li ng-click="showRecommendation()">Recommendation</li>

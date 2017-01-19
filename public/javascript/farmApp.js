@@ -113,6 +113,10 @@ app.controller('farmController', function ($scope, $http, $rootScope, $document)
 
     $scope.showRecommendation = function () {
         $rootScope.viewToShow = 'recommendation';
+    };
+
+    $scope.showWelcome = function () {
+        $rootScope.viewToShow = 'welcome';
     }
 
 });

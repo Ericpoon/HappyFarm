@@ -75,7 +75,7 @@
     position: relative;
     list-style: none;
     padding: 20px 10px 0 10px;
-    margin: 0;
+    margin: auto;
     height: calc(100vh - 220px); /*TODO:1*/
     overflow: scroll;
 }
@@ -89,7 +89,7 @@
 }
 
 .messages .message.left .avatar {
-    background-color: #d777f5;
+    background-color: #dd9ef5;
     float: left;
 }
 
@@ -109,7 +109,7 @@
 }
 
 .messages .message.right .avatar {
-    background-color: #fdbf68;
+    background-color: #82b4fd;
     float: right;
 }
 

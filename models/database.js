@@ -52,6 +52,9 @@ function initialize(needNewData) {
             }
         });
         User.remove({}, function (err) {
+            if (err) {
+                console.log(err);
+            }
         });
         function createNewUser() {
             var newUser = new User({

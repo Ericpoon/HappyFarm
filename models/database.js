@@ -192,7 +192,7 @@ function removeTodo(id, completion) {
     id = mongoose.Types.ObjectId(id);
     Todo.remove({'_id': id}, function (err, docs) {
         if (!err) {
-            console.log(docs);
+            console.log('database.js - Successfully removed a todo.');
         } else {
             console.log(err);
             completion(err);

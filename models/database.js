@@ -189,8 +189,8 @@ function addTodo(user, todo, completion) {
 }
 
 function removeTodo(id, completion) {
-    console.log("ID: " + id);
-    Todo.remove({'_id': id.toString().replace("\"","")}, function (err, docs) {
+    console.log("database.js - Removing todo by id: " + id);
+    Todo.remove({'_id': id}, function (err, docs) {
         if (!err) {
             console.log('database.js - Successfully removed a todo.');
         } else {

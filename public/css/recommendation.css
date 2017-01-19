@@ -29,7 +29,7 @@
 .recommendation ul {
     list-style: none;
     padding: 0;
-    margin: 45px auto 0 auto;
+    margin: 52px auto 0 auto;
     color: #2ca02c;
     width: 100%;
     text-align: left;
@@ -46,7 +46,7 @@
     height: 70px;
     line-height: 70px;
     padding-left: 60px;
-    transition: 200ms;
+    transition: 300ms;
     white-space: nowrap;
 }
 
@@ -67,7 +67,7 @@
     border-color: #2ca02c;
     border-style: solid;
     border-width: 0 2px 2px 0;
-    top: 25cpx;
+    top: 24px;
     left: 23px;
     transform: rotate(45deg);
     height: 14px;
@@ -91,7 +91,7 @@
     box-sizing: border-box;
     cursor: pointer;
     margin: 20px 0;
-    transition: 200ms;
+    transition: 300ms;
 }
 
 .recommendation .closeButton:hover {
@@ -104,7 +104,7 @@
 }
 
 .recommendation .todoList {
-    height: 70%;
+    height: 65%;
     overflow: scroll;
 }
 
@@ -113,6 +113,6 @@
     height: 0;
     padding: 0;
     margin: 0;
-    font-size: 100px;
+    font-size: 0;
     /*transform: translateX(-100px);*/
 }

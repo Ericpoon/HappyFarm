@@ -6,10 +6,12 @@
 }
 
 .chat_window {
-    /*position: absolute;*/
     width: 61.8%;
     height: calc(100vh - 59px);
-    border-radius: 10px;
+    float: right;
+    right: 0;
+    bottom: 0;
+    position: fixed;
     background-color: #fff;
     /*left: 50%;*/
     /*top: 50%;*/
@@ -66,7 +68,7 @@
     list-style: none;
     padding: 20px 10px 0 10px;
     margin: 0;
-    height: calc(100vh - 214px); /*TODO:1*/
+    height: calc(100vh - 220px); /*TODO:1*/
     overflow: scroll;
 }
 
@@ -165,22 +167,27 @@
 }
 
 .bottom_wrapper {
-    position: relative;
-    width: 100%;
+    position: absolute;
+    width: 61.8%;
+    height: 88px;
+    right: 0;
     background-color: #fff;
     padding: 20px 20px;
     /*position: absolute;*/
     bottom: 0;
+    z-index: 99999;
 }
 
 .bottom_wrapper .message_input_wrapper {
     display: inline-block;
-    height: 50px;
+    height: 45px;
     border-radius: 25px;
     border: 1px solid #bcbdc0;
     width: calc(100% - 160px);
     position: relative;
     padding: 0 20px;
+    line-height: 45px;
+    margin: auto;
 }
 
 .bottom_wrapper .message_input_wrapper .message_input {
@@ -192,6 +199,8 @@
     /*position: absolute;*/
     outline-width: 0;
     color: gray;
+    line-height: 45px;
+    margin: auto;
 }
 
 .message_input:focus {
@@ -200,7 +209,7 @@
 
 .bottom_wrapper .send_message {
     width: 140px;
-    height: 50px;
+    height: 45px;
     display: inline-block;
     border-radius: 50px;
     background-color: #a3d063;
@@ -221,7 +230,7 @@
     font-size: 18px;
     font-weight: 300;
     display: inline-block;
-    line-height: 48px;
+    line-height: 45px;
     background-color: rgba(0, 0, 0, 0);
 }
 

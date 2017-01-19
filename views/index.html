@@ -50,6 +50,11 @@
     </div>
 </div>
 
+<!-- -- Chat Bot -->
+<div class="chatbot" ng-if="viewToShow!='welcome'">
+    <myng-chat></myng-chat>
+</div>
+
 <div class="data" ng-if="viewToShow!='welcome'">
     <!-- Left Part -->
     <div class="overallDisplay">
@@ -98,10 +103,6 @@
         </div>
     </div>
 
-    <!-- -- Chat Bot -->
-    <div class="chatbot" ng-if="viewToShow=='chatbot'">
-        <myng-chat></myng-chat>
-    </div>
     <!-- -- Recommendation -->
     <div class="recommendation" ng-if="viewToShow=='recommendation'">
         <myng-recommendation ng-model="list">

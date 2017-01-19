@@ -68,6 +68,7 @@ app.controller('farmController', function ($scope, $http, $rootScope) {
 
     $scope.showChat = function () {
         $rootScope.viewToShow = 'chatbot';
+        $scope.$root.$broadcast('refreshChat');
     };
 
     $scope.showRecommendation = function () {
@@ -90,11 +91,11 @@ app.directive('myngRadarChart', function ($window, $rootScope) {
             acidity: (max.acidity + min.acidity) / 2
         };
         var minimalRequirement = {
-            temperatureRatio: (max.temperature - optimal.temperature) / optimal.temperature,
-            humidityRatio: (max.humidity - optimal.humidity) / optimal.humidity,
-            sunlightRatio: (max.sunlight - optimal.sunlight) / optimal.sunlight,
-            soilQualityRatio: (max.soilQuality - optimal.soilQuality) / optimal.soilQuality,
-            acidityRatio: (max.acidity - optimal.acidity) / optimal.acidity
+            temperatureRatio: 1 - (max.temperature - optimal.temperature) / optimal.temperature,
+            humidityRatio: 1 - (max.humidity - optimal.humidity) / optimal.humidity,
+            sunlightRatio: 1 - (max.sunlight - optimal.sunlight) / optimal.sunlight,
+            soilQualityRatio: 1 - (max.soilQuality - optimal.soilQuality) / optimal.soilQuality,
+            acidityRatio: 1 - (max.acidity - optimal.acidity) / optimal.acidity
         };
 
         // get data
@@ -415,6 +416,13 @@ app.directive('myngLineChart', function ($rootScope) {
 
 app.directive('myngChat', function ($rootScope, $http) {
     function link(scope) {
+
+        var refreshChat;
+
+        scope.$on('refreshChat', function (event, msg) {
+            refreshChat();
+        });
+
         $jq = jQuery.noConflict();
         (function () {
             $jq('.message_input').focus();
@@ -428,6 +436,7 @@ app.directive('myngChat', function ($rootScope, $http) {
                         $message = $jq($jq('.message_template').clone().html());
                         $message.addClass(_this.message_side).find('.text').html(_this.text);
                         $jq('.messages').append($message);
+                        console.log(document.getElementsByClassName('messages')[0]);
                         return setTimeout(function () {
                             return $message.addClass('appeared');
                         }, 0);
@@ -443,7 +452,7 @@ app.directive('myngChat', function ($rootScope, $http) {
                     $message_input = $jq('.message_input');
                     return $message_input.val();
                 };
-                sendMessage = function (text, sender, isNew, autoRespond) {
+                sendMessage = function (text, sender, isNew, autoRespond, callback) {
                     var $messages, message;
                     if (text.trim === undefined) {
                         return;
@@ -466,29 +475,41 @@ app.directive('myngChat', function ($rootScope, $http) {
                     if (isNew) {
                         $rootScope.chatMessages.push({'text': message.text, 'message_side': message.message_side});
                     }
-                    return $messages.animate({scrollTop: $messages.prop('scrollHeight')}, 20);
+                    if (callback) {
+                        callback();
+                    }
+                    return $messages.animate({scrollTop: $messages.prop('scrollHeight')}, 1);
                 };
                 respondUser = function (text) {
                     sendMessage(text, 'left', true, false);
                 };
                 $jq('.send_message').click(function (e) {
-                    return sendMessage(getMessageText(), 'right', true, true); // user is the sender
+                    $rootScope.viewToShow = 'chatbot';
+                    return sendMessage(getMessageText(), 'right', true, true, reloadChatHistory); // user is the sender
                 });
                 $jq('.message_input').keyup(function (e) {
                     if (e.which === 13) {
-                        return sendMessage(getMessageText(), 'right', true, true); // user is the sender
+                        $rootScope.viewToShow = 'chatbot';
+                        return sendMessage(getMessageText(), 'right', true, true, reloadChatHistory); // user is the sender
                     }
                 });
-                if ($rootScope.chatMessages.length == 0) {
-                    sendMessage("Hey " + $rootScope.userInfo.name + ", what's up?", 'left', true, false);
-                } else {
-                    for (var i = 0; i < $rootScope.chatMessages.length; i++) {
-                        var msg = $rootScope.chatMessages[i];
-                        displayWithDelay(msg); // avoid capturing the wrong value (functional programming)
-                        function displayWithDelay(msg) {
-                            setTimeout(function () {
+                reloadChatHistory();
+                refreshChat = reloadChatHistory;
+                function reloadChatHistory() {
+                    if ($rootScope.chatMessages.length == 0) {
+                        sendMessage("Hey " + $rootScope.userInfo.name + ", what's up?", 'left', true, false);
+                        return;
+                    }
+                    if ($jq('.messages').children().length == $rootScope.chatMessages.length) {
+                        return;
+                    } else {
+                        for (var i = 0; i < $rootScope.chatMessages.length; i++) {
+                            var msg = $rootScope.chatMessages[i];
+                            displayWithDelay(msg); // avoid capturing the wrong value (functional programming)
+                            function displayWithDelay(msg) {
                                 sendMessage(msg.text, msg.message_side, false, false);
-                            }, 20);
+                                // no delay
+                            }
                         }
                     }
                 }
@@ -530,31 +551,32 @@ app.directive('myngChat', function ($rootScope, $http) {
                     var temperatureRelated = ['temperature', 'cold', 'hot', 'temp'];
                     var humidityRelated = ['humidity', 'wet', 'dry'];
                     var sunlightRelated = ['sunlight', 'sunny', 'cloudy'];
-                    var acidityRelated = ['acidity', 'ph'];
+                    var acidityRelated = ['acidity', 'ph', 'acid', 'alkaline'];
                     var soilRelated = ['soil'];
 
                     var graphRelated = ['chart', 'diagram', 'graph'];
                     var realtimeRelated = ['now', 'current', 'currently', 'realtime', 'real time', 'real-time'];
 
-                    if (contains(input, [], [temperatureRelated, graphRelated])) {
+                    function changeToGraph(idx) {
+                        $rootScope.currentChartIndex = idx;
+                        scope.$root.$broadcast('chartChange', $rootScope.currentChartIndex);
                         $rootScope.viewToShow = 'data';
-                        $rootScope.currentChartIndex = 0;
+                    }
+
+                    if (contains(input, [], [temperatureRelated, graphRelated])) {
+                        changeToGraph(0);
                         return;
                     } else if (contains(input, [], [humidityRelated, graphRelated])) {
-                        $rootScope.viewToShow = 'data';
-                        $rootScope.currentChartIndex = 1;
+                        changeToGraph(1);
                         return;
                     } else if (contains(input, [], [sunlightRelated, graphRelated])) {
-                        $rootScope.viewToShow = 'data';
-                        $rootScope.currentChartIndex = 2;
+                        changeToGraph(2);
                         return;
                     } else if (contains(input, [], [soilRelated, graphRelated])) {
-                        $rootScope.viewToShow = 'data';
-                        $rootScope.currentChartIndex = 3;
+                        changeToGraph(3);
                         return;
                     } else if (contains(input, [], [acidityRelated, graphRelated])) {
-                        $rootScope.viewToShow = 'data';
-                        $rootScope.currentChartIndex = 4;
+                        changeToGraph(4);
                         return;
                     } else if (contains(input, [], [temperatureRelated, realtimeRelated])) {
                         var realtime = $rootScope.sensorData[$rootScope.sensorData.length - 1].temperature.toFixed(0);
@@ -565,6 +587,7 @@ app.directive('myngChat', function ($rootScope, $http) {
                             for (var i = 0; i < responses.length; i++) {
                                 callback(responses[i]);
                             }
+                            reloadChatHistory();
                         }, 500);
                         return;
                     } else if (contains(input, [], [humidityRelated, realtimeRelated])) {
@@ -583,6 +606,7 @@ app.directive('myngChat', function ($rootScope, $http) {
                         var max = $rootScope.max.sunlight.toFixed(0);
                         var min = $rootScope.min.sunlight.toFixed(0);
                         var responses = respondPlantRelated(2, realtime, max, min);
+                        $rootScope.viewToShow = 'chatbot';
                         setTimeout(function () {
                             for (var i = 0; i < responses.length; i++) {
                                 callback(responses[i]);
@@ -594,6 +618,7 @@ app.directive('myngChat', function ($rootScope, $http) {
                         var max = $rootScope.max.soilQuality.toFixed(0);
                         var min = $rootScope.min.soilQuality.toFixed(0);
                         var responses = respondPlantRelated(3, realtime, max, min);
+                        $rootScope.viewToShow = 'chatbot';
                         setTimeout(function () {
                             for (var i = 0; i < responses.length; i++) {
                                 callback(responses[i]);
@@ -605,6 +630,8 @@ app.directive('myngChat', function ($rootScope, $http) {
                         var max = $rootScope.max.acidity.toFixed(0);
                         var min = $rootScope.min.acidity.toFixed(0);
                         var responses = respondPlantRelated(4, realtime, max, min);
+                        // $rootScope.viewToShow = 'chatbot';
+                        console.log($rootScope.viewToShow);
                         setTimeout(function () {
                             for (var i = 0; i < responses.length; i++) {
                                 callback(responses[i]);
@@ -653,6 +680,8 @@ app.directive('myngRecommendation', function ($http) {
             $http.delete('/db/removetodo/' + n._id).then(function (res) {
                 console.log(res);
             });
+            document.getElementById(n._id).childNodes[1].innerHTML = '';
+            document.getElementById(n._id).childNodes[3].value = '';
             text.addClass('fadeoff');
             button.addClass('fadeoff');
             setTimeout(function () {
@@ -671,8 +700,20 @@ app.directive('myngRecommendation', function ($http) {
 
 
 function respondPlantRelated(type, realtime, max, min) {
+    console.log(type, realtime, max, min);
+    realtime = parseInt(realtime)
+    max = parseInt(max);
+    min = parseInt(min);
     switch (type) {
         case 0: // temperature
+            if (realtime <= max && realtime >= min) {
+                // feeling great
+                return [
+                    // two sentences will be sent in a row
+                    "Ahhh It's like " + realtime + ", which is good! Thanks for asking <3",
+                    "Have a good one <3"
+                ];
+            }
             if (realtime > max) {
                 if ((realtime - max) / max > 0.15) {
                     // extremely hot
@@ -689,14 +730,15 @@ function respondPlantRelated(type, realtime, max, min) {
                     "It's kinda hot outside!",
                     "It's " + realtime + " Celsius, I prefer less than " + max
                 ];
-            } else if (realtime < min) {
+            }
+            if (realtime < min) {
                 if ((min - realtime) / min > 0.15) {
                     // extremely cold
                     return [
                         // three sentences will be sent in a row
                         "Do you know I'm dying from the coldness outside?!",
-                        realtime + " Celsius, I need some warmth",
-                        "Would you mind spending more time on me, taking good care of me and putting me where's ABOVE " + realtime + " ?!!!"
+                        realtime + " Celsius, I need some warmth! *punch you in the face with pillow*",
+                        "Would you mind spending more time on me, taking good care of me and putting me where's ABOVE " + min + " ?!!!"
                     ]
                 }
                 // just cold
@@ -704,24 +746,149 @@ function respondPlantRelated(type, realtime, max, min) {
                     // only one sentence will be sent out
                     "It's like " + realtime + " celsius outside... Would be great if it's above " + min + "."
                 ];
-            } else {
-                // feeling great
-                return [
-                    // two sentences will be sent in a row
-                    "Ahhh It's like " + realtime + ", which is good! Thanks for asking <3",
-                    "Have a good one <3"
-                ];
             }
         case 1: // humidity
-        // THANKS BASY
-
+            if (realtime <= max && realtime >= min) {
+                // feeling great
+                return [
+                    "Thx for asking, it's " + realtime + "%, I feel great!"
+                ];
+            }
+            if (realtime > max) {
+                if ((realtime - max) / max > 0.15) {
+                    // extremely humid
+                    return [
+                        "Hey! I'm dying in your humid backyard (I guess..)",
+                        "It's " + realtime + "%, please save me IMMEDIATELY! NEED TO BE BELOW " + max + "%"
+                    ];
+                }
+                // just humid
+                return [
+                    realtime + "% rn, it's really wet! Is it raining outside? I prefer below " + max + "%",
+                    "Maybe I need an umbrella..?"
+                ];
+            }
+            if (realtime < min) {
+                if ((min - realtime) / min > 0.15) {
+                    // extremely dry
+                    return [
+                        realtime + "%... WATER... WATER... WATER...",
+                        "Do you know I can only survive with humidity above " + min + "% ?!?!"
+                    ]
+                }
+                // just dry
+                return [
+                    "Hmm, I'm kinda thirsty, it's " + realtime + "% now.",
+                    "Water me like you last time did plz >.<"
+                ];
+            }
 
         case 2: // sunlight
-
+            if (realtime <= max && realtime >= min) {
+                // feeling great
+                return [
+                    "*Enjoying in the backyard* (Am I really in the backyard tho..?)"
+                ];
+            }
+            if (realtime > max) {
+                if ((realtime - max) / max > 0.15) {
+                    // extremely light
+                    return [
+                        "Too light! I can't see anything!",
+                        "Need a dark place, urgently!"
+                    ];
+                }
+                // just light
+                return [
+                    "It's okay.. but I prefer to move to a shady place. Maybe under " + max + " of sunlight?"
+                ];
+            }
+            if (realtime < min) {
+                if ((min - realtime) / min > 0.15) {
+                    // extremely dark
+                    return [
+                        realtime + " of light...",
+                        "Can't see anything...",
+                        "*dying in the dark*",
+                        "I wish I could walk to a sunny place :'("
+                    ]
+                }
+                // just dark
+                return [
+                    "A little bit more sunshine would be highly appreciated, my master."
+                ];
+            }
         case 3: // soil
+            if (realtime <= max && realtime >= min) {
+                // feeling great
+                return [
+                    "*saying with love* It's good. It's great. It's perfect!"
+                ];
+            }
+            if (realtime > max) {
+                console.log(realtime ,max);
+                if ((realtime - max) / max > 0.15) {
+                    // extremely rich
+                    return [
+                        "Hmm, too much!!",
+                        "Don't put this much fertilizer next time!! It tastes sooo bad!! *angrily*"
+                    ];
+                }
+                // just rich
+                return [
+                    "Ahhhhhh, it's kinda too much for me, but im fine.",
+                ];
+            }
+            if (realtime < min) {
+                if ((min - realtime) / min > 0.15) {
+                    // extremely poor
+                    return [
+                        "*dying* I need richer soil... You're killing me",
+                        "I hate you.. hate you very much"
+                    ]
+                }
+                // just poor
+                return [
+                    "Kinda poor for me, would you mind giving me more nutrition?"
+                ];
+            }
 
         case 4: // acidity
+            if (realtime <= max && realtime >= min) {
+                // feeling great
+                return [
+                    "*Enjoying the perfect soil*",
+                    "*Growing up quickly*"
+                ];
+            }
+            if (realtime > max) {
+                if ((realtime - max) / max > 0.15) {
+                    // extremely low ph
+                    return [
+                        "Hmmmmmm, not good, the soil tastes sour!!",
+                        "I think you put the wrong fertilizer? Fix it immediately!!"
 
+                    ];
+                }
+                // just low
+                return [
+                    "I guess the acid in the soil is too much for me to absorb... it's " + realtime,
+                    "I prefer a pH between " + min + " and " + max + " :)"
+                ];
+            }
+            if (realtime < min) {
+                if ((min - realtime) / min > 0.15) {
+                    // extremely high ph
+                    return [
+                        "Too bad.. Alkaline soil (" + realtime + ") is killing me *sadly*",
+                        "Would you please fix it for me right now? Otherwise you may not see me again..."
+                    ]
+                }
+                // just high
+                return [
+                    realtime + ", not very good but still fine..",
+                    "Would be great if you can make it between " + min + " and " + max + "."
+                ];
+            }
     }
-
 }

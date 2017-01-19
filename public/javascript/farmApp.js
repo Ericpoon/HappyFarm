@@ -163,7 +163,6 @@ app.directive('myngRadarChart', function ($window, $rootScope) {
 
             ];
             // draw the chart
-
             var color = d3.scale.ordinal()
                 .range(["#b7b7b7", "rgb(146,184,58)"]); // minimal, data
 
@@ -180,6 +179,8 @@ app.directive('myngRadarChart', function ($window, $rootScope) {
             RadarChart("#radarChart", data, radarChartOptions, showDetailedChart);
 
             function showDetailedChart(index) {
+                $rootScope.viewToShow = 'data';
+                $rootScope.currentChartIndex = index;
                 scope.$root.$broadcast('chartChange', index);
             }
         }
@@ -297,6 +298,8 @@ app.directive('myngLineChart', function ($rootScope) {
         }
 
         scope.$on('chartChange', function (event, msg) {
+            console.log(msg);
+            $rootScope.viewToShow = 'data';
             changeToChartIndex(msg);
         });
 
@@ -826,7 +829,7 @@ function respondPlantRelated(type, realtime, max, min) {
                 ];
             }
             if (realtime > max) {
-                console.log(realtime ,max);
+                console.log(realtime, max);
                 if ((realtime - max) / max > 0.15) {
                     // extremely rich
                     return [

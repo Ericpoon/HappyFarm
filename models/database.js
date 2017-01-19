@@ -191,8 +191,10 @@ function addTodo(user, todo, completion) {
 function removeTodo(id, completion) {
     Todo.remove({'_id': id}, function (err, docs) {
         if (!err) {
+            console.log(docs);
             completion(docs);
         } else {
+            console.log(err);
             completion(err);
         }
     });

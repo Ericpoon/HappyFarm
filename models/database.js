@@ -189,7 +189,6 @@ function addTodo(user, todo, completion) {
 }
 
 function removeTodo(id, completion) {
-    id = mongoose.Types.ObjectId(id);
     Todo.remove({'_id': id}, function (err, docs) {
         if (!err) {
             console.log('database.js - Successfully removed a todo.');

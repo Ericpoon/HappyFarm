@@ -12,7 +12,7 @@
     right: 0;
     bottom: 0;
     position: fixed;
-    background-color: #fff;
+    background-color: #edeff2;
     /*left: 50%;*/
     /*top: 50%;*/
     /*transform: translateX(-50%) translateY(-50%);*/
@@ -22,46 +22,54 @@
     /*transform: translateY(10%);*/
 }
 
-.top_menu {
-    background-color: #fff;
-    width: 100%;
-    box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
+.chat_window .title {
+    margin: 25px 0 15px 0;
+    font-size: 30px;
+    text-align: center;
+    background-color: #edeff2;
 }
 
+/*.top_menu {*/
+/*background-color: #fff;*/
+/*width: 100%;*/
+/*box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);*/
+/*}*/
+
+
 /*.top_menu .buttons {*/
-    /*margin: 3px 0 0 20px;*/
-    /*!*position: absolute;*!*/
-    /*background-color: #fff;*/
+/*margin: 3px 0 0 20px;*/
+/*!*position: absolute;*!*/
+/*background-color: #fff;*/
 /*}*/
 
 /*.top_menu .buttons .button {*/
-    /*width: 16px;*/
-    /*height: 16px;*/
-    /*border-radius: 50%;*/
-    /*display: inline-block;*/
-    /*margin-right: 10px;*/
-    /*position: relative;*/
+/*width: 16px;*/
+/*height: 16px;*/
+/*border-radius: 50%;*/
+/*display: inline-block;*/
+/*margin-right: 10px;*/
+/*position: relative;*/
 /*}*/
 
 /*.top_menu .buttons .button.close {*/
-    /*background-color: #f5886e;*/
+/*background-color: #f5886e;*/
 /*}*/
 
 /*.top_menu .buttons .button.minimize {*/
-    /*background-color: #fdbf68;*/
+/*background-color: #fdbf68;*/
 /*}*/
 
 /*.top_menu .buttons .button.maximize {*/
-    /*background-color: #a3d063;*/
+/*background-color: #a3d063;*/
 /*}*/
 
-.top_menu .title {
-    text-align: center;
-    color: #b4b5b8;
-    font-size: 30px;
-    background-color: #fff;
-    padding: 25px 0 15px 0;
-}
+/*.top_menu .title {*/
+    /*text-align: center;*/
+    /*color: #b4b5b8;*/
+    /*font-size: 30px;*/
+    /*background-color: #fff;*/
+    /*padding: 25px 0 15px 0;*/
+/*}*/
 
 .messages {
     position: relative;
@@ -81,7 +89,7 @@
 }
 
 .messages .message.left .avatar {
-    background-color: #f5886e;
+    background-color: #d777f5;
     float: left;
 }
 

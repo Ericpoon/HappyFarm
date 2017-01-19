@@ -51,15 +51,16 @@ function initialize(needNewData) {
                 createNewUser();
             }
         });
-
+        User.remove({}, function (err) {
+        });
         function createNewUser() {
             var newUser = new User({
                 name: 'Eric',
                 age: '20',
                 location: 'Hong Kong',
                 level: '1',
-                plant: 'Tomato',
-                startDate: '20170111221405'
+                plant: 'Violet',
+                startDate: Date.now() - 40 * 86400000
             });
             newUser.save(function (err, product) {
                 if (err) {
@@ -78,12 +79,12 @@ function initialize(needNewData) {
         for (var i = 0; i < 100; i++) {
             var newData = new Data({
                 user: 'Eric',
-                temperature: Math.random() * 30,    // 0  - 30
-                humidity: 20 + Math.random() * 70,  // 20 - 90
-                sunlight: Math.random() * 100,      // 0  - 100
-                acidity: 2 + Math.random() * 10,    // 2  - 12
-                soilQuality: Math.random() * 100,    // 0  - 100
-                time: Date.now() - i * 86400000
+                temperature: 14 + Math.random() * 13,     // 14 - 27
+                humidity: 20 + Math.random() * 60,        // 20 - 80
+                sunlight: 65 + Math.random() * 35,        // 65  - 100
+                acidity: 4 + Math.random() * 6,           // 4  - 10
+                soilQuality: 70 + Math.random() * 30,      // 70  - 100
+                time: Date.now() - (i + 2) * 86400000
             });
             newData.save(function (err, product) {
                 if (err) {
@@ -91,6 +92,21 @@ function initialize(needNewData) {
                 }
             })
         }
+        // last data
+        var newData = new Data({
+            user: 'Eric',
+            temperature: 21.28,
+            humidity: 12.03,
+            sunlight: 53.23,
+            acidity: 4,
+            soilQuality: 71.23,
+            time: Date.now() - 1 * 86400000 // yesterday
+        });
+        newData.save(function (err, product) {
+            if (err) {
+                console.log('Error - Fail to add new data');
+            }
+        })
 
     }
 }
@@ -180,7 +196,7 @@ function addTodo(user, todo, completion) {
         time: Date.now()
     });
     newTodo.save(function (err, newDoc) {
-        if (err){
+        if (err) {
             console.log('database.js - Fail to add new todo - ' + err);
         } else {
             completion(newDoc);

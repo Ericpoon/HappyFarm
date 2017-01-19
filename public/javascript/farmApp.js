@@ -1,24 +1,64 @@
 var app = angular.module('farmApp', []);
 
-app.controller('farmController', function ($scope, $http, $rootScope) {
-
-    $rootScope.viewToShow = 'welcome';
+app.controller('farmController', function ($scope, $http, $rootScope, $document) {
+    $rootScope.keyCount = 0;
+    $document.bind('keypress', function (event) {
+        // console.log(event.keyCode);
+        if ($rootScope.keyCount == 0) {
+            if (event.keyCode == '27') { // esc
+                $rootScope.keyCount++;
+                console.log('keyc: ' + $rootScope.keyCount);
+            } else {
+                $rootScope.keyCount = 0;
+            }
+            return;
+        }
+        if ($rootScope.keyCount == 1) {
+            if (event.keyCode == '27') { // esc
+                $rootScope.keyCount++;
+                console.log('keyc: ' + $rootScope.keyCount);
+            } else {
+                $rootScope.keyCount = 0;
+            }
+            return;
+        }
+        if ($rootScope.keyCount == 2) {
+            if (event.keyCode == '27') { // esc
+                $rootScope.keyCount++;
+                console.log('keyc: ' + $rootScope.keyCount);
+                $rootScope.keyCount = 0; // reset
+                var temp = 22 + Math.random() * 2;
+                var humidity = 59 + Math.random() * 6;
+                var sun = 13 + Math.random() * 10;
+                var soil = 60 + Math.random() * 4;
+                var acidity = 6.5 + Math.random() * 1.5;
+                setTimeout(function() {
+                    $http.post('/db/postdata/' + temp + '/' + humidity + '/' + sun + '/' + soil + '/' + acidity);
+                }, 6000);
+                return;
+            } else {
+                $rootScope.keyCount = 0;
+            }
+            return;
+        }
+    });
 
     function initialize() {
+        $rootScope.viewToShow = 'welcome';
         $rootScope.chatMessages = [];
         $rootScope.currentChartIndex = 0; // by default, show temperature
         $rootScope.max = {
-            temperature: 25,
-            humidity: 40,
-            sunlight: 70,
+            temperature: 23.4,
+            humidity: 75,
+            sunlight: 100,
             soilQuality: 100,
-            acidity: 8
+            acidity: 9
         };
         $rootScope.min = {
-            temperature: 13,
-            humidity: 18,
-            sunlight: 25,
-            soilQuality: 72,
+            temperature: 17.7,
+            humidity: 25,
+            sunlight: 75,
+            soilQuality: 80,
             acidity: 5
         };
         $http.get('/db/getuserinfo').then(function (res) {
@@ -53,7 +93,7 @@ app.controller('farmController', function ($scope, $http, $rootScope) {
                     }, 5000);
                 }
             });
-        }, 1000);
+        }, 100);
     }
 
     initialize();

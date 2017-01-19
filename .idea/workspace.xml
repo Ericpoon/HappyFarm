@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="14a17081-e4c8-44bb-a7d6-57b7467c461a" name="Default" comment="" />
+    <list default="true" id="14a17081-e4c8-44bb-a7d6-57b7467c461a" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/database.js" afterPath="$PROJECT_DIR$/models/database.js" />
+    </list>
     <ignored path="Happy Farm.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -61,7 +64,7 @@
       <file leaf-file-name="database.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/database.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="193">
+            <state relative-caret-position="178">
               <caret line="194" column="16" selection-start-line="194" selection-start-column="16" selection-end-line="194" selection-end-column="16" />
               <folding />
             </state>
@@ -356,7 +359,6 @@
         <option value="$PROJECT_DIR$/config/config.js" />
         <option value="$PROJECT_DIR$/public/css/navigation.css" />
         <option value="$PROJECT_DIR$/routers/databaseRouter.js" />
-        <option value="$PROJECT_DIR$/models/database.js" />
         <option value="$PROJECT_DIR$/public/html/recommendation.html" />
         <option value="$PROJECT_DIR$/public/css/data.css" />
         <option value="$PROJECT_DIR$/public/css/chatbot.css" />
@@ -364,6 +366,7 @@
         <option value="$PROJECT_DIR$/views/index.html" />
         <option value="$PROJECT_DIR$/public/html/chat.html" />
         <option value="$PROJECT_DIR$/public/javascript/farmApp.js" />
+        <option value="$PROJECT_DIR$/models/database.js" />
       </list>
     </option>
   </component>
@@ -719,12 +722,12 @@
       <workItem from="1484297183770" duration="42796000" />
       <workItem from="1484543673497" duration="40631000" />
       <workItem from="1484702033019" duration="743000" />
-      <workItem from="1484704330575" duration="43698000" />
+      <workItem from="1484704330575" duration="43910000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="146099000" />
+    <option name="totallyTimeSpent" value="146311000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="99" y="22" width="1332" height="933" extended-state="0" />
@@ -1953,7 +1956,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/models/database.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
+        <state relative-caret-position="178">
           <caret line="194" column="16" selection-start-line="194" selection-start-column="16" selection-end-line="194" selection-end-column="16" />
           <folding />
         </state>

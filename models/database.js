@@ -193,7 +193,7 @@ function removeTodo(id, completion) {
         if (!err) {
             completion(docs);
         } else {
-            completion(null);
+            completion(err);
         }
     });
 }

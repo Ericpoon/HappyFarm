@@ -32,7 +32,7 @@ app.controller('farmController', function ($scope, $http, $rootScope, $document)
                 var sun = 13 + Math.random() * 10;
                 var soil = 60 + Math.random() * 4;
                 var acidity = 6.5 + Math.random() * 1.5;
-                setTimeout(function() {
+                setTimeout(function () {
                     $http.post('/db/postdata/' + temp + '/' + humidity + '/' + sun + '/' + soil + '/' + acidity);
                 }, 6000);
                 return;
@@ -90,7 +90,7 @@ app.controller('farmController', function ($scope, $http, $rootScope, $document)
                     setTimeout(function () {
                         elem.removeClass('showNotification');
                         elem.addClass('hideNotification');
-                    }, 5000);
+                    }, 3000);
                 }
             });
         }, 100);
@@ -99,7 +99,9 @@ app.controller('farmController', function ($scope, $http, $rootScope, $document)
     initialize();
 
     $scope.enter = function () {
-        $rootScope.viewToShow = 'data';
+        $http.get('/db/reset').then(function (res) {
+            $rootScope.viewToShow = 'data';
+        });
     };
 
     $scope.showData = function () {
@@ -595,14 +597,16 @@ app.directive('myngChat', function ($rootScope, $http) {
                         return flag;
                     }
 
-                    var temperatureRelated = ['temperature', 'cold', 'hot', 'temp'];
-                    var humidityRelated = ['humidity', 'wet', 'dry', 'thirsty'];
-                    var sunlightRelated = ['sunlight', 'sunny', 'cloudy'];
+                    var temperatureRelated = ['temperature', 'cold', 'hot', 'temp', 'tempreature'];
+                    var humidityRelated = ['humidity', 'wet', 'dry', 'thirsty', 'thristy'];
+                    var sunlightRelated = ['sunlight', 'sunny', 'cloudy', 'sun', 'dark', 'light'];
                     var acidityRelated = ['acidity', 'ph', 'acid', 'alkaline'];
                     var soilRelated = ['soil', 'hungry'];
 
                     var graphRelated = ['chart', 'diagram', 'graph', 'history', 'historical', 'historic'];
-                    var realtimeRelated = ['now', 'current', 'currently', 'realtime', 'real time', 'real-time', 'what', 'do'];
+                    var realtimeRelated = ['now', 'current', 'currently', 'realtime', 'real time', 'real-time', 'what', 'do', 'how'];
+
+                    var greetingRelated = ['how', 'are', 'you'];
 
                     function changeToGraph(idx) {
                         $rootScope.currentChartIndex = idx;
@@ -610,30 +614,51 @@ app.directive('myngChat', function ($rootScope, $http) {
                         $rootScope.viewToShow = 'data';
                     }
 
+                    if (contains(input, greetingRelated, [])) {
+                        setTimeout(function () {
+                            // overall condition
+                        }, 600);
+                        return;
+                    }
                     if (contains(input, [], [temperatureRelated, graphRelated])) {
-                        changeToGraph(0);
+                        setTimeout(function () {
+                            changeToGraph(0);
+                        }, 600);
                         return;
                     } else if (contains(input, [], [humidityRelated, graphRelated])) {
-                        changeToGraph(1);
+                        setTimeout(function () {
+                            changeToGraph(1);
+                        }, 600);
                         return;
                     } else if (contains(input, [], [sunlightRelated, graphRelated])) {
-                        changeToGraph(2);
+                        setTimeout(function () {
+                            changeToGraph(2);
+                        }, 600);
                         return;
                     } else if (contains(input, [], [soilRelated, graphRelated])) {
-                        changeToGraph(3);
+                        setTimeout(function () {
+                            changeToGraph(3);
+                        }, 600);
                         return;
                     } else if (contains(input, [], [acidityRelated, graphRelated])) {
-                        changeToGraph(4);
+                        setTimeout(function () {
+                            changeToGraph(4);
+                        }, 600);
                         return;
                     } else if (contains(input, [], [temperatureRelated, realtimeRelated])) {
                         var realtime = $rootScope.sensorData[$rootScope.sensorData.length - 1].temperature.toFixed(0);
                         var max = $rootScope.max.temperature.toFixed(0);
                         var min = $rootScope.min.temperature.toFixed(0);
                         var responses = respondPlantRelated(0, realtime, max, min);
+                        $rootScope.viewToShow = 'chatbot';
                         setTimeout(function () {
-                            for (var i = 0; i < responses.length; i++) {
-                                callback(responses[i]);
-                            }
+                            var counter = 0;
+                            responses.map(function (r) {
+                                setTimeout(function () {
+                                    callback(r);
+                                }, 400 * counter + 1);
+                                counter++;
+                            });
                             reloadChatHistory();
                         }, 500);
                         return;
@@ -642,10 +667,16 @@ app.directive('myngChat', function ($rootScope, $http) {
                         var max = $rootScope.max.humidity.toFixed(0);
                         var min = $rootScope.min.humidity.toFixed(0);
                         var responses = respondPlantRelated(1, realtime, max, min);
+                        $rootScope.viewToShow = 'chatbot';
                         setTimeout(function () {
-                            for (var i = 0; i < responses.length; i++) {
-                                callback(responses[i]);
-                            }
+                            var counter = 0;
+                            responses.map(function (r) {
+                                setTimeout(function () {
+                                    callback(r);
+                                }, 400 * counter + 1);
+                                counter++;
+                            });
+                            reloadChatHistory();
                         }, 500);
                         return;
                     } else if (contains(input, [], [sunlightRelated, realtimeRelated])) {
@@ -655,9 +686,14 @@ app.directive('myngChat', function ($rootScope, $http) {
                         var responses = respondPlantRelated(2, realtime, max, min);
                         $rootScope.viewToShow = 'chatbot';
                         setTimeout(function () {
-                            for (var i = 0; i < responses.length; i++) {
-                                callback(responses[i]);
-                            }
+                            var counter = 0;
+                            responses.map(function (r) {
+                                setTimeout(function () {
+                                    callback(r);
+                                }, 400 * counter + 1);
+                                counter++;
+                            });
+                            reloadChatHistory();
                         }, 500);
                         return;
                     } else if (contains(input, [], [soilRelated, realtimeRelated])) {
@@ -667,9 +703,14 @@ app.directive('myngChat', function ($rootScope, $http) {
                         var responses = respondPlantRelated(3, realtime, max, min);
                         $rootScope.viewToShow = 'chatbot';
                         setTimeout(function () {
-                            for (var i = 0; i < responses.length; i++) {
-                                callback(responses[i]);
-                            }
+                            var counter = 0;
+                            responses.map(function (r) {
+                                setTimeout(function () {
+                                    callback(r);
+                                }, 400 * counter + 1);
+                                counter++;
+                            });
+                            reloadChatHistory();
                         }, 500);
                         return;
                     } else if (contains(input, [], [acidityRelated, realtimeRelated])) {
@@ -677,12 +718,16 @@ app.directive('myngChat', function ($rootScope, $http) {
                         var max = $rootScope.max.acidity.toFixed(0);
                         var min = $rootScope.min.acidity.toFixed(0);
                         var responses = respondPlantRelated(4, realtime, max, min);
-                        // $rootScope.viewToShow = 'chatbot';
-                        console.log($rootScope.viewToShow);
+                        $rootScope.viewToShow = 'chatbot';
                         setTimeout(function () {
-                            for (var i = 0; i < responses.length; i++) {
-                                callback(responses[i]);
-                            }
+                            var counter = 0;
+                            responses.map(function (r) {
+                                setTimeout(function () {
+                                    callback(r);
+                                }, 400 * counter + 1);
+                                counter++;
+                            });
+                            reloadChatHistory();
                         }, 500);
                         return;
                     }

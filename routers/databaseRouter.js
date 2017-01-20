@@ -42,6 +42,12 @@ router.get('/gettodolist', function (req, res) {
 });
 
 // receive data from sensor
+
+router.get('/reset', function (req, res) {
+    database.reset();
+    res.send('Database reinitialized.');
+});
+
 router.post('/postdata/:temperature/:humidity/:sunlight/:soilQuality/:acidity', function (req, res) {
     database.saveNewData('Eric', req.params, function (newData) {
         res.send(newData);

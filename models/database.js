@@ -98,11 +98,11 @@ function initialize(needNewData) {
         // last data
         var newData = new Data({
             user: 'Eric',
-            temperature: 21.28,
-            humidity: 12.03,
-            sunlight: 53.23,
-            acidity: 4,
-            soilQuality: 71.23,
+            temperature: 21.28 + 2 * (Math.random() - 0.5),
+            humidity: 12.03 + 2 * (Math.random() - 0.5),
+            sunlight: 53.23 + 2 * (Math.random() - 0.5),
+            acidity: 4.02 + 0.5 * (Math.random() - 0.5),
+            soilQuality: 71.23 + 2 * (Math.random() - 0.5),
             time: Date.now() - 1 * 86400000 // yesterday
         });
         newData.save(function (err, product) {
@@ -219,6 +219,10 @@ function removeTodo(id, completion) {
     });
 }
 
+function reset() {
+    initialize(true);
+}
+
 var lastDocID = null;
 
 // var a = 20170110135639 + 10000;
@@ -230,5 +234,6 @@ module.exports = {
     'saveNewData': saveNewData,
     'getTodoList': getTodoList,
     'addTodo': addTodo,
-    'removeTodo': removeTodo
+    'removeTodo': removeTodo,
+    'reset': reset
 };

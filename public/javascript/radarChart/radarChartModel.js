@@ -112,7 +112,7 @@ function RadarChart(id, data, options, showDetailedChart) {
         .style("font-size", "10px")
         .attr("fill", "#737373") // percentage text color
         .text(function (d, i) {
-            return Format(maxValue * d / cfg.levels);
+            return Format(maxValue * d / cfg.levels).replace('%', ' score');
         });
 
     /////////////////////////////////////////////////////////
@@ -277,7 +277,7 @@ function RadarChart(id, data, options, showDetailedChart) {
             tooltip
                 .attr('x', newX)
                 .attr('y', newY)
-                .text(Format(d.value))
+                .text(Format(d.value).replace('%', ''))
                 .transition().duration(200)
                 .style('opacity', 1);
         })

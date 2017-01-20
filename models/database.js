@@ -82,11 +82,11 @@ function initialize(needNewData) {
         for (var i = 0; i < 100; i++) {
             var newData = new Data({
                 user: 'Eric',
-                temperature: 14 + Math.random() * 13,     // 14 - 27
-                humidity: 20 + Math.random() * 60,        // 20 - 80
-                sunlight: 65 + Math.random() * 35,        // 65  - 100
-                acidity: 4 + Math.random() * 6,           // 4  - 10
-                soilQuality: 70 + Math.random() * 30,      // 70  - 100
+                temperature: 17 + Math.random() * 6,     // 17 - 23
+                humidity: 40 + Math.random() * 40,        // 40 - 80
+                sunlight: 10 + Math.random() * 50,        // 10  - 60
+                acidity: 6 + Math.random() * 2,           // 6  - 8
+                soilQuality: 35 + Math.random() * 20,      // 35  - 55 // water content
                 time: Date.now() - (i + 2) * 86400000
             });
             newData.save(function (err, product) {
@@ -98,11 +98,11 @@ function initialize(needNewData) {
         // last data
         var newData = new Data({
             user: 'Eric',
-            temperature: 21.28 + 2 * (Math.random() - 0.5),
-            humidity: 12.03 + 2 * (Math.random() - 0.5),
-            sunlight: 53.23 + 2 * (Math.random() - 0.5),
-            acidity: 4.02 + 0.5 * (Math.random() - 0.5),
-            soilQuality: 71.23 + 2 * (Math.random() - 0.5),
+            temperature: 19.28 + 2 * (Math.random() - 0.5),
+            humidity: 50 + 3 * (Math.random() - 0.5),
+            sunlight: 8.3 + 5 * (Math.random() - 0.5),
+            acidity: 5.02 + 0.5 * (Math.random() - 0.5),
+            soilQuality: 15.23 + 6 * (Math.random() - 0.5),
             time: Date.now() - 1 * 86400000 // yesterday
         });
         newData.save(function (err, product) {
@@ -237,3 +237,12 @@ module.exports = {
     'removeTodo': removeTodo,
     'reset': reset
 };
+
+// water 2 -3 , 70
+
+// temp 20
+// humidity 50 - 60
+
+// light 10 - 20 // larger range
+
+// ph 6- 8 // rand

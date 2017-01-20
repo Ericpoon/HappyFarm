@@ -121,7 +121,8 @@
 .detailedDisplay #lineChart {
     margin: auto;
     width: 85%;
-    height: 450px;
+    height: 500px;
+    padding-bottom: 300px;
 }
 
 .data .detailedDisplay .realTimeData {

@@ -47,19 +47,31 @@ app.controller('farmController', function ($scope, $http, $rootScope, $document)
         $rootScope.viewToShow = 'welcome';
         $rootScope.chatMessages = [];
         $rootScope.currentChartIndex = 0; // by default, show temperature
+        // temp 20
+        // water 2 -3 , 70
+        // humidity 50 - 60
+        // light 10 - 20 // larger range
+        // ph 6- 8 // rand
+
+        //     temperature: 17 + Math.random() * 6,     // 17 - 23
+        //     humidity: 40 + Math.random() * 40,        // 40 - 80
+        //     sunlight: 10 + Math.random() * 50,        // 10  - 60
+        //     acidity: 6 + Math.random() * 2,           // 6  - 8
+        //     soilQuality: 5 + Math.random() * 30,      // 5  - 35 // water content
+
         $rootScope.max = {
-            temperature: 23.4,
+            temperature: 27.4,
             humidity: 75,
-            sunlight: 100,
-            soilQuality: 100,
-            acidity: 9
+            sunlight: 40,
+            soilQuality: 90,
+            acidity: 8.1
         };
         $rootScope.min = {
-            temperature: 17.7,
-            humidity: 25,
-            sunlight: 75,
-            soilQuality: 80,
-            acidity: 5
+            temperature: 16.7,
+            humidity: 35,
+            sunlight: 10,
+            soilQuality: 30,
+            acidity: 6.1
         };
         $http.get('/db/getuserinfo').then(function (res) {
             $scope.userInfo = res.data;
@@ -100,7 +112,9 @@ app.controller('farmController', function ($scope, $http, $rootScope, $document)
 
     $scope.enter = function () {
         $http.get('/db/reset').then(function (res) {
-            $rootScope.viewToShow = 'data';
+            setTimeout(function () {
+                $rootScope.viewToShow = 'data';
+            }, 400);
         });
     };
 
@@ -168,7 +182,7 @@ app.directive('myngRadarChart', function ($window, $rootScope) {
                         value: 1 - (max.temperature - optimal.temperature) / optimal.temperature
                     },
                     {
-                        axis: "Humidity",
+                        axis: "Air Humidity",
                         value: 1 - (max.humidity - optimal.humidity) / optimal.humidity
                     },
                     {
@@ -176,7 +190,7 @@ app.directive('myngRadarChart', function ($window, $rootScope) {
                         value: 1 - (max.sunlight - optimal.sunlight) / optimal.sunlight
                     },
                     {
-                        axis: "Soil",
+                        axis: "Water Content",
                         value: 1 - (max.soilQuality - optimal.soilQuality) / optimal.soilQuality
                     },
                     {
@@ -190,7 +204,7 @@ app.directive('myngRadarChart', function ($window, $rootScope) {
                         value: Math.max(1 - Math.abs(latestData.temperature - optimal.temperature) / optimal.temperature, 0.1)
                     },
                     {
-                        axis: "Humidity",
+                        axis: "Air Humidity",
                         value: Math.max(1 - Math.abs(latestData.humidity - optimal.humidity) / optimal.humidity, 0.1)
                     },
                     {
@@ -198,7 +212,7 @@ app.directive('myngRadarChart', function ($window, $rootScope) {
                         value: Math.max(1 - Math.abs(latestData.sunlight - optimal.sunlight) / optimal.sunlight, 0.1)
                     },
                     {
-                        axis: "Soil",
+                        axis: "Water Content",
                         value: Math.max(1 - Math.abs(latestData.soilQuality - optimal.soilQuality) / optimal.soilQuality, 0.1)
                     },
                     {
@@ -269,7 +283,7 @@ app.directive('myngLineChart', function ($rootScope) {
                         d3.select("#realTimeDataValue").text(' ' + data[data.length - 1].temperature.toFixed(2));
                         break;
                     case 1:
-                        d3.select("#chartName").text('Humidity');
+                        d3.select("#chartName").text('Air Humidity');
                         d3.select('#paramIcon').attr('src', '/public/images/humidity.png');
                         d3.select("#realTimeDataValue").text(' ' + data[data.length - 1].humidity.toFixed(2));
                         break;
@@ -279,7 +293,7 @@ app.directive('myngLineChart', function ($rootScope) {
                         d3.select("#realTimeDataValue").text(' ' + data[data.length - 1].sunlight.toFixed(2));
                         break;
                     case 3:
-                        d3.select("#chartName").text('Soil');
+                        d3.select("#chartName").text('Water Content');
                         d3.select('#paramIcon').attr('src', '/public/images/soil.png');
                         d3.select("#realTimeDataValue").text(' ' + data[data.length - 1].soilQuality.toFixed(2));
                         break;
@@ -306,7 +320,7 @@ app.directive('myngLineChart', function ($rootScope) {
                 case 1:
                     chartData = data.map(function (a) {
                         return {
-                            name: 'Humidity',
+                            name: 'Air Humidity',
                             x: a.time,
                             y: a.humidity
                         }
@@ -324,7 +338,7 @@ app.directive('myngLineChart', function ($rootScope) {
                 case 3:
                     chartData = data.map(function (a) {
                         return {
-                            name: 'Soil',
+                            name: 'Water Content',
                             x: a.time,
                             y: a.soilQuality
                         }
@@ -403,11 +417,11 @@ app.directive('myngLineChart', function ($rootScope) {
                 var name = data[0].name;
                 if (name == 'Temperature') {
                     name = 'temperature';
-                } else if (name == 'Humidity') {
+                } else if (name == 'Air Humidity') {
                     name = 'humidity';
                 } else if (name == 'Sunlight') {
                     name = 'sunlight';
-                } else if (name == 'Soil') {
+                } else if (name == 'Water Content') {
                     name = 'soilQuality';
                 } else if (name == 'Acidity') {
                     name = 'acidity';
@@ -546,7 +560,7 @@ app.directive('myngChat', function ($rootScope, $http) {
                 refreshChat = reloadChatHistory;
                 function reloadChatHistory() {
                     if ($rootScope.chatMessages.length == 0) {
-                        sendMessage("Hey " + $rootScope.userInfo.name + ", what's up?", 'left', true, false);
+                        // sendMessage("Hey " + $rootScope.userInfo.name + ", what's up?", 'left', true, false);
                         return;
                     }
                     if ($jq('.messages').children().length == $rootScope.chatMessages.length) {
@@ -597,11 +611,17 @@ app.directive('myngChat', function ($rootScope, $http) {
                         return flag;
                     }
 
+                    function changeToGraph(idx) {
+                        $rootScope.currentChartIndex = idx;
+                        scope.$root.$broadcast('chartChange', $rootScope.currentChartIndex);
+                        $rootScope.viewToShow = 'data';
+                    }
+
                     var temperatureRelated = ['temperature', 'cold', 'hot', 'temp', 'tempreature'];
-                    var humidityRelated = ['humidity', 'wet', 'dry', 'thirsty', 'thristy'];
+                    var humidityRelated = ['humidity', 'wet', 'dry'];
                     var sunlightRelated = ['sunlight', 'sunny', 'cloudy', 'sun', 'dark', 'light'];
                     var acidityRelated = ['acidity', 'ph', 'acid', 'alkaline'];
-                    var soilRelated = ['soil', 'hungry'];
+                    var waterRelated = ['water', 'thirsty', 'thristy'];
 
                     var graphRelated = ['chart', 'diagram', 'graph', 'history', 'historical', 'historic'];
                     var realtimeRelated = ['now', 'current', 'currently', 'realtime', 'real time', 'real-time', 'what', 'do', 'how'];
@@ -611,11 +631,67 @@ app.directive('myngChat', function ($rootScope, $http) {
                     var jokeRelated = ['joke'];
                     var tellRelated = ['tell', 'give', 'make'];
 
-                    function changeToGraph(idx) {
-                        $rootScope.currentChartIndex = idx;
-                        scope.$root.$broadcast('chartChange', $rootScope.currentChartIndex);
-                        $rootScope.viewToShow = 'data';
+
+                    if (contains(input, ['what', 'up'], [])) {
+                        var responses = ["Not good :'("];
+                        setTimeout(function () {
+                            var counter = 0;
+                            responses.map(function (r) {
+                                setTimeout(function () {
+                                    callback(r);
+                                }, 700 * counter + 1);
+                                counter++;
+                            });
+                            reloadChatHistory();
+                        }, 1000);
+                        return;
                     }
+                    var why = ['happen', 'why'];
+                    if (contains(input, [], [why])) {
+                        var responses = ["Hmm... I'm thirsty.."];
+                        setTimeout(function () {
+                            var counter = 0;
+                            responses.map(function (r) {
+                                setTimeout(function () {
+                                    callback(r);
+                                }, 700 * counter + 1);
+                                counter++;
+                            });
+                            reloadChatHistory();
+                        }, 1000);
+                        return;
+                    }
+
+                    if (contains(input, [], [['what', 'how'], ['can', 'could', 'should', 'shall']])) {
+                        var responses = ["Water me..", "Please water me....", "I need a half bucket of water, similar to what you gave me yesterday.", 'Btw, me, African Violet, needs to be watered every day to grow well.'];
+                        setTimeout(function () {
+                            var counter = 0;
+                            responses.map(function (r) {
+                                setTimeout(function () {
+                                    callback(r);
+                                }, 800 * counter + 1);
+                                counter++;
+                            });
+                            reloadChatHistory();
+                        }, 1000);
+                        return;
+                    }
+
+                    if (contains(input, [], [['done', 'watered', 'finished']])) {
+                        var responses = ["THANK YOU, Eric! <3", "I'm feeling much better now!!"];
+                        setTimeout(function () {
+                            var counter = 0;
+                            responses.map(function (r) {
+                                setTimeout(function () {
+                                    callback(r);
+                                }, 700 * counter + 1);
+                                counter++;
+                            });
+                            reloadChatHistory();
+                        }, 1000);
+                        return;
+                    }
+
 
                     if (contains(input, greetingRelated, [])) {
                         setTimeout(function () {
@@ -670,7 +746,7 @@ app.directive('myngChat', function ($rootScope, $http) {
                                     responses.map(function (r) {
                                         setTimeout(function () {
                                             callback(r);
-                                        }, 400 * counter + 1);
+                                        }, 700 * counter + 1);
                                         counter++;
                                     });
                                     reloadChatHistory();
@@ -714,7 +790,7 @@ app.directive('myngChat', function ($rootScope, $http) {
                                     responses.map(function (r) {
                                         setTimeout(function () {
                                             callback(r);
-                                        }, 400 * counter + 1);
+                                        }, 700 * counter + 1);
                                         counter++;
                                     });
                                     reloadChatHistory();
@@ -726,14 +802,14 @@ app.directive('myngChat', function ($rootScope, $http) {
                                     responses.map(function (r) {
                                         setTimeout(function () {
                                             callback(r);
-                                        }, 400 * counter + 1);
+                                        }, 700 * counter + 1);
                                         counter++;
                                     });
                                     reloadChatHistory();
                                 }, 500);
                             }
 
-                        }, 600);
+                        }, 1000);
                         return;
                     }
 
@@ -744,11 +820,11 @@ app.directive('myngChat', function ($rootScope, $http) {
                             responses.map(function (r) {
                                 setTimeout(function () {
                                     callback(r);
-                                }, 6500 * counter + 1);
+                                }, 6000 * counter + 1);
                                 counter++;
                             });
                             reloadChatHistory();
-                        }, 500);
+                        }, 1000);
                         return;
                     }
 
@@ -763,7 +839,7 @@ app.directive('myngChat', function ($rootScope, $http) {
                                 counter++;
                             });
                             reloadChatHistory();
-                        }, 500);
+                        }, 1000);
                         return;
                     }
 
@@ -782,7 +858,7 @@ app.directive('myngChat', function ($rootScope, $http) {
                             changeToGraph(2);
                         }, 600);
                         return;
-                    } else if (contains(input, [], [soilRelated, graphRelated])) {
+                    } else if (contains(input, [], [waterRelated, graphRelated])) {
                         setTimeout(function () {
                             changeToGraph(3);
                         }, 600);
@@ -843,7 +919,7 @@ app.directive('myngChat', function ($rootScope, $http) {
                             reloadChatHistory();
                         }, 500);
                         return;
-                    } else if (contains(input, [], [soilRelated, realtimeRelated])) {
+                    } else if (contains(input, [], [waterRelated, realtimeRelated])) {
                         var realtime = $rootScope.sensorData[$rootScope.sensorData.length - 1].soilQuality.toFixed(0);
                         var max = $rootScope.max.soilQuality.toFixed(0);
                         var min = $rootScope.min.soilQuality.toFixed(0);

@@ -27,11 +27,11 @@ app.controller('farmController', function ($scope, $http, $rootScope, $document)
                 $rootScope.keyCount++;
                 console.log('keyc: ' + $rootScope.keyCount);
                 $rootScope.keyCount = 0; // reset
-                var temp = 22 + Math.random() * 2;
-                var humidity = 59 + Math.random() * 6;
-                var sun = 13 + Math.random() * 10;
-                var soil = 60 + Math.random() * 4;
-                var acidity = 6.5 + Math.random() * 1.5;
+                var temp = $rootScope.sensorData[$rootScope.sensorData.length - 1].temperature;
+                var humidity = $rootScope.sensorData[$rootScope.sensorData.length - 1].humidity;
+                var sun = $rootScope.sensorData[$rootScope.sensorData.length - 1].sunlight;
+                var soil = 70;
+                var acidity = $rootScope.sensorData[$rootScope.sensorData.length - 1].acidity;
                 setTimeout(function () {
                     $http.post('/db/postdata/' + temp + '/' + humidity + '/' + sun + '/' + soil + '/' + acidity);
                 }, 6000);
@@ -95,7 +95,7 @@ app.controller('farmController', function ($scope, $http, $rootScope, $document)
                     $scope.sensorData = updatedSensorData;
                     $rootScope.sensorData = updatedSensorData;
                     //
-                    $rootScope.currentCondition = 'New update! Temperature: ' + res.data.temperature.toFixed(2) + ' Celsius.';
+                    $rootScope.currentCondition = 'New update!';
                     var elem = angular.element(document.getElementById('notificationText'));
                     elem.removeClass('hideNotification');
                     elem.addClass('showNotification');
@@ -1012,7 +1012,6 @@ app.directive('myngRecommendation', function ($http) {
         templateUrl: '/public/html/recommendation.html'
     }
 });
-
 
 function respondPlantRelated(type, realtime, max, min) {
     console.log(type, realtime, max, min);

@@ -608,6 +608,9 @@ app.directive('myngChat', function ($rootScope, $http) {
 
                     var greetingRelated = ['how', 'are', 'you'];
 
+                    var jokeRelated = ['joke'];
+                    var tellRelated = ['tell', 'give', 'make'];
+
                     function changeToGraph(idx) {
                         $rootScope.currentChartIndex = idx;
                         scope.$root.$broadcast('chartChange', $rootScope.currentChartIndex);
@@ -617,9 +620,153 @@ app.directive('myngChat', function ($rootScope, $http) {
                     if (contains(input, greetingRelated, [])) {
                         setTimeout(function () {
                             // overall condition
+
+                            var realtime = $rootScope.sensorData[$rootScope.sensorData.length - 1];
+                            var max = $rootScope.max;
+                            var min = $rootScope.min;
+
+                            var temp = 0;
+                            var humidity = 0;
+                            var sunlight = 0;
+                            var soil = 0;
+                            var acidity = 0;
+
+                            if (realtime.temperature >= max.temperature) {
+                                temp = 1;
+                            }
+                            if (realtime.temperature <= min.temperature) {
+                                temp = -1;
+                            }
+                            if (realtime.humidity >= max.humidity) {
+                                humidity = 1;
+                            }
+                            if (realtime.humidity <= min.humidity) {
+                                humidity = -1;
+                            }
+                            if (realtime.sunlight >= max.sunlight) {
+                                sunlight = 1;
+                            }
+                            if (realtime.sunlight <= min.sunlight) {
+                                sunlight = -1;
+                            }
+                            if (realtime.soilQuality >= max.soilQuality) {
+                                soil = 1;
+                            }
+                            if (realtime.soilQuality <= min.soilQuality) {
+                                soil = -1;
+                            }
+                            if (realtime.acidity >= max.acidity) {
+                                acidity = 1;
+                            }
+                            if (realtime.acidity <= min.acidity) {
+                                acidity = -1;
+                            }
+
+                            var overall = Math.abs(temp) + Math.abs(humidity) + Math.abs(sunlight) + Math.abs(soil) + Math.abs(acidity);
+                            if (overall == 0) {
+                                var responses = ["Great!! I'm growing up happliy and quickly <3"];
+                                setTimeout(function () {
+                                    var counter = 0;
+                                    responses.map(function (r) {
+                                        setTimeout(function () {
+                                            callback(r);
+                                        }, 400 * counter + 1);
+                                        counter++;
+                                    });
+                                    reloadChatHistory();
+                                }, 500);
+                            } else if (overall == 1) {
+                                var responses = ["Ahhh not good."];
+                                if (temp == 1) {
+                                    responses.push("It's " + realtime.temperature + " Celsius, " + "I'm feeling hot..");
+                                }
+                                if (temp == -1) {
+                                    responses.push("It's " + realtime.temperature + " Celsius, " + "it's freezing..");
+                                }
+                                if (humidity == 1) {
+                                    responses.push("It's " + realtime.humidity + "%, " + "it's way too humid to survive!");
+                                }
+                                if (humidity == -1) {
+                                    responses.push("It's " + realtime.humidity + "%, " + "too dry :<");
+                                }
+                                if (sunlight == 1) {
+                                    responses.push("I need a darker place...");
+                                }
+                                if (sunlight == -1) {
+                                    responses.push("I need a place with more sunshine.");
+                                }
+                                if (soil == 1) {
+                                    responses.push("My soil tastes bad...");
+                                }
+                                if (soil == -1) {
+                                    responses.push("My soil tastes sooo bad...");
+                                }
+                                if (acidity == 1) {
+                                    responses.push("I need a more acid fertilizer..");
+                                }
+                                if (acidity == -1) {
+                                    responses.push("My soil now is too acid for me to live...");
+                                }
+
+
+                                setTimeout(function () {
+                                    var counter = 0;
+                                    responses.map(function (r) {
+                                        setTimeout(function () {
+                                            callback(r);
+                                        }, 400 * counter + 1);
+                                        counter++;
+                                    });
+                                    reloadChatHistory();
+                                }, 500);
+                            } else if (overall >= 2) {
+                                var responses = ["So bad :'(", "I'm dying... did you see the graph on the left..?"];
+                                setTimeout(function () {
+                                    var counter = 0;
+                                    responses.map(function (r) {
+                                        setTimeout(function () {
+                                            callback(r);
+                                        }, 400 * counter + 1);
+                                        counter++;
+                                    });
+                                    reloadChatHistory();
+                                }, 500);
+                            }
+
                         }, 600);
                         return;
                     }
+
+                    if (contains(input, jokeRelated, [tellRelated])) {
+                        var responses = ["What do you get when you divide the circumference of an apple by its diameter?", "Apple Pie!"];
+                        setTimeout(function () {
+                            var counter = 0;
+                            responses.map(function (r) {
+                                setTimeout(function () {
+                                    callback(r);
+                                }, 6500 * counter + 1);
+                                counter++;
+                            });
+                            reloadChatHistory();
+                        }, 500);
+                        return;
+                    }
+
+                    if (contains(input, [], [['good', 'great'], ['joke', 'one', 'job']])) {
+                        var responses = ["Thank you!"];
+                        setTimeout(function () {
+                            var counter = 0;
+                            responses.map(function (r) {
+                                setTimeout(function () {
+                                    callback(r);
+                                }, 500 * counter + 1);
+                                counter++;
+                            });
+                            reloadChatHistory();
+                        }, 500);
+                        return;
+                    }
+
                     if (contains(input, [], [temperatureRelated, graphRelated])) {
                         setTimeout(function () {
                             changeToGraph(0);

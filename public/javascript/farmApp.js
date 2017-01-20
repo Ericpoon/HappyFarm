@@ -34,7 +34,7 @@ app.controller('farmController', function ($scope, $http, $rootScope, $document)
                 var acidity = $rootScope.sensorData[$rootScope.sensorData.length - 1].acidity;
                 setTimeout(function () {
                     $http.post('/db/postdata/' + temp + '/' + humidity + '/' + sun + '/' + soil + '/' + acidity);
-                }, 6000);
+                }, 5000);
                 return;
             } else {
                 $rootScope.keyCount = 0;
@@ -648,7 +648,7 @@ app.directive('myngChat', function ($rootScope, $http) {
                     }
                     var why = ['happen', 'why'];
                     if (contains(input, [], [why])) {
-                        var responses = ["Hmm... I'm thirsty.."];
+                        var responses = ["Hmm... I'm thirsty.. My water content is lower than " + $rootScope.min.soilQuality + "%!!"];
                         setTimeout(function () {
                             var counter = 0;
                             responses.map(function (r) {
@@ -662,8 +662,8 @@ app.directive('myngChat', function ($rootScope, $http) {
                         return;
                     }
 
-                    if (contains(input, [], [['what', 'how'], ['can', 'could', 'should', 'shall']])) {
-                        var responses = ["Water me..", "Please water me....", "I need a half bucket of water, similar to what you gave me yesterday.", 'Btw, me, African Violet, needs to be watered every day to grow well.'];
+                    if (contains(input, [], [['what', 'how'], ['can', 'could', 'should', 'shall', 'may', 'might', 'would']])) {
+                        var responses = ["Water me..", "Please water me....I need half a cup of water.", 'Btw, as an African Violet, I need to be watered every day to grow well.'];
                         setTimeout(function () {
                             var counter = 0;
                             responses.map(function (r) {

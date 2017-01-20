@@ -596,13 +596,13 @@ app.directive('myngChat', function ($rootScope, $http) {
                     }
 
                     var temperatureRelated = ['temperature', 'cold', 'hot', 'temp'];
-                    var humidityRelated = ['humidity', 'wet', 'dry'];
+                    var humidityRelated = ['humidity', 'wet', 'dry', 'thirsty'];
                     var sunlightRelated = ['sunlight', 'sunny', 'cloudy'];
                     var acidityRelated = ['acidity', 'ph', 'acid', 'alkaline'];
-                    var soilRelated = ['soil'];
+                    var soilRelated = ['soil', 'hungry'];
 
-                    var graphRelated = ['chart', 'diagram', 'graph'];
-                    var realtimeRelated = ['now', 'current', 'currently', 'realtime', 'real time', 'real-time'];
+                    var graphRelated = ['chart', 'diagram', 'graph', 'history', 'historical', 'historic'];
+                    var realtimeRelated = ['now', 'current', 'currently', 'realtime', 'real time', 'real-time', 'what', 'do'];
 
                     function changeToGraph(idx) {
                         $rootScope.currentChartIndex = idx;
@@ -748,7 +748,7 @@ app.directive('myngRecommendation', function ($http) {
 
 function respondPlantRelated(type, realtime, max, min) {
     console.log(type, realtime, max, min);
-    realtime = parseInt(realtime)
+    realtime = parseInt(realtime);
     max = parseInt(max);
     min = parseInt(min);
     switch (type) {

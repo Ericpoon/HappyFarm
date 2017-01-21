@@ -133,8 +133,8 @@
 }
 
 .data .detailedDisplay #paramIcon {
-    transform: translateY(-20px);
-    height: 60%;
+    transform: translateY(-17px);
+    height: 100%;
     margin: auto;
 }
 

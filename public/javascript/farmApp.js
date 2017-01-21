@@ -3,9 +3,9 @@ var app = angular.module('farmApp', []);
 app.controller('farmController', function ($scope, $http, $rootScope, $document) {
     $rootScope.keyCount = 0;
     $document.bind('keypress', function (event) {
-        // console.log(event.keyCode);
+        console.log(event.keyCode);
         if ($rootScope.keyCount == 0) {
-            if (event.keyCode == '27') { // esc
+            if (event.keyCode == '96') { // esc
                 $rootScope.keyCount++;
                 console.log('keyc: ' + $rootScope.keyCount);
             } else {
@@ -14,7 +14,7 @@ app.controller('farmController', function ($scope, $http, $rootScope, $document)
             return;
         }
         if ($rootScope.keyCount == 1) {
-            if (event.keyCode == '27') { // esc
+            if (event.keyCode == '96') { // esc
                 $rootScope.keyCount++;
                 console.log('keyc: ' + $rootScope.keyCount);
             } else {
@@ -23,7 +23,7 @@ app.controller('farmController', function ($scope, $http, $rootScope, $document)
             return;
         }
         if ($rootScope.keyCount == 2) {
-            if (event.keyCode == '27') { // esc
+            if (event.keyCode == '96') { // esc
                 $rootScope.keyCount++;
                 console.log('keyc: ' + $rootScope.keyCount);
                 $rootScope.keyCount = 0; // reset
@@ -113,7 +113,11 @@ app.controller('farmController', function ($scope, $http, $rootScope, $document)
     $scope.enter = function () {
         $http.get('/db/reset').then(function (res) {
             setTimeout(function () {
-                $rootScope.viewToShow = 'data';
+                $http.get('/db/getsensordata').then(function (res) {
+                    $scope.sensorData = res.data;
+                    $rootScope.sensorData = $scope.sensorData;
+                    $rootScope.viewToShow = 'data';
+                });
             }, 400);
         });
     };

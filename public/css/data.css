@@ -11,7 +11,7 @@
 }
 
 .data img.plantIcon {
-    padding: 0 20% 0 20%;
+    padding: 0 10% 0 10%;
     box-sizing: border-box;
     width: 100%;
 }
@@ -25,7 +25,7 @@
 
 .data .upperWrapper {
     width: 90%;
-    margin: 30px auto auto auto;
+    margin: 20px auto auto auto;
 }
 
 .data .nextPlant {
@@ -47,31 +47,31 @@
     color: rgb(87, 151, 46);
 }
 
-/* Overall display */
-.overallDisplay {
-    width: 38.2%;
-    height: calc(100vh - 59px); /* 45+7+7 */
-    float: left;
-    /*border: 1px solid red;*/
-    box-sizing: border-box;
-    background-color: rgb(240, 240, 240);
-}
+/*!* Overall display *!*/
+/*.overallDisplay {*/
+    /*width: 38.2%;*/
+    /*height: calc(100vh - 59px); !* 45+7+7 *!*/
+    /*float: left;*/
+    /*!*border: 1px solid red;*!*/
+    /*box-sizing: border-box;*/
+    /*background-color: rgb(240, 240, 240);*/
+/*}*/
 
-.overallDisplay:hover {
-    background-color: rgb(245, 245, 245);
-}
+/*.overallDisplay:hover {*/
+    /*background-color: rgb(245, 245, 245);*/
+/*}*/
 
-.overallDisplay .radarChartDisplay {
-    transform: translateY(-30px);
-    text-align: center;
-    width: 90%;
-    margin: auto;
-}
+/*.overallDisplay .radarChartDisplay {*/
+    /*transform: translateY(-30px);*/
+    /*text-align: center;*/
+    /*width: 90%;*/
+    /*margin: auto;*/
+/*}*/
 
-.overallDisplay #radarChart {
-    margin: auto;
-    /*border: 1px solid darkcyan;*/
-}
+/*.overallDisplay #radarChart {*/
+    /*margin: auto;*/
+    /*!*border: 1px solid darkcyan;*!*/
+/*}*/
 /* Overall display */
 .overallDisplay {
     width: 38.2%;
@@ -83,7 +83,7 @@
 }
 
 .overallDisplay .radarChartDisplay {
-    transform: translateY(-30px);
+    transform: translateY(-65px);
     text-align: center;
     width: 90%;
     margin: auto;
@@ -121,7 +121,7 @@
 .detailedDisplay #lineChart {
     margin: auto;
     width: 85%;
-    height: 500px;
+    height: 315px;
     padding-bottom: 300px;
 }
 
@@ -133,8 +133,8 @@
 }
 
 .data .detailedDisplay #paramIcon {
-    transform: translateY(4px);
-    height: 65%;
+    transform: translateY(-20px);
+    height: 60%;
     margin: auto;
 }
 
@@ -144,14 +144,14 @@
     margin: auto;
     float: left;
     /*border: 1px solid red;*/
-    height: 120px;
+    height: 30px;
 }
 
 .data .detailedDisplay #realTimeDataValue {
-    transform: translateX(5px) translateY(-12px);
+    transform: translateX(5px) translateY(-40px);
     text-align: left;
     vertical-align: middle;
-    font-size: 35px;
+    font-size: 25px;
 }
 
 /* d3 related */

@@ -249,7 +249,7 @@ app.directive('myngRadarChart', function ($window, $rootScope) {
             ];
             // draw the chart
             var color = d3.scale.ordinal()
-                .range(["#b7b7b7", "#72B5ED"]); // minimal, data
+                .range(["#b7b7b7", "rgb(136, 174, 68)"]); // minimal, data
 
             var radarChartOptions = {
                 w: width,

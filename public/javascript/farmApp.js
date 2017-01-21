@@ -179,8 +179,29 @@ app.directive('myngRadarChart', function ($window, $rootScope) {
                 height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
             // data
             var data = [
+                [// Optimal, at the bottom
+                    {
+                        axis: "Temperature",
+                        value: 1
+                    },
+                    {
+                        axis: "Air Humidity",
+                        value: 1
+                    },
+                    {
+                        axis: "Sunlight",
+                        value: 1
+                    },
+                    {
+                        axis: "Water Content",
+                        value: 1
+                    },
+                    {
+                        axis: "Acidity",
+                        value: 1
+                    }
+                ],
                 [// Minimal
-                    // on top of Data
                     {
                         axis: "Temperature",
                         value: 1 - (max.temperature - optimal.temperature) / optimal.temperature
@@ -228,7 +249,7 @@ app.directive('myngRadarChart', function ($window, $rootScope) {
             ];
             // draw the chart
             var color = d3.scale.ordinal()
-                .range(["#b7b7b7", "rgb(146,184,58)"]); // minimal, data
+                .range(["#72B5ED", "#b7b7b7", "#FF5600"]); // minimal, data
 
             var radarChartOptions = {
                 w: width,
